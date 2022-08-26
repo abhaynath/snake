@@ -5,9 +5,13 @@
   let foodLeft = 0;
   let foodTop = 0;
   let direction = "right";
+  let game_width = 0,game_height=0;
   let snakeBodies = [];
 
   $: score = snakeBodies.length - 3;
+
+  $:GAME_WIDTH = game_width-50;
+  $:GAME_HEIGHT = game_height-50;
 
   setInterval(() => {
     snakeBodies.pop();
@@ -43,8 +47,8 @@
   }
 
   function moveFood() {
-    foodTop = Math.floor(Math.random() * (Config.GAME_HEIGHT / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
-    foodLeft = Math.floor(Math.random() * (Config.GAME_WIDTH / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
+    foodTop = Math.floor(Math.random() * (GAME_HEIGHT / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
+    foodLeft = Math.floor(Math.random() * (GAME_WIDTH / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
   }
 
   function resetGame() {
@@ -77,7 +81,7 @@
 
     const { top, left } = snakeBodies[0];
 
-    if (top >= Config.GAME_HEIGHT || top < 0 || left < 0 || left >= Config.GAME_WIDTH) {
+    if (top >= GAME_HEIGHT || top < 0 || left < 0 || left >= GAME_WIDTH) {
       return true;
     }
 
@@ -108,18 +112,20 @@
   resetGame();
 </script>
 
-<main style="width:{Config.GAME_WIDTH}px;height:{Config.GAME_HEIGHT}px;">
+<main style="width:{GAME_WIDTH}px;height:{GAME_HEIGHT}px;">
   <Snake {direction} {snakeBodies} />
   <Food {foodLeft} {foodTop} />
 </main>
-<h2>Score : {score}</h2>
-<svelte:window on:keydown={onKeyDown} />
+<!-- <h2>Score : {score}</h2> -->
+<svelte:window on:keydown={onKeyDown} bind:innerWidth={game_width} bind:innerHeight={game_height} />
 
 <style>
   main {
     border: solid black 1px;
     position: relative;
-    margin: 20px auto;
+    margin: 0px auto;
     background-color: #ffffff;
+    width:100%;
+    height:100%;
   }
 </style>
