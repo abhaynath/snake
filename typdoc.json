@@ -1,0 +1,5 @@
+{
+  "exclude": ["*.svelte"],
+  "entryPoints": ["src/main.ts"],
+  "out": "docs"
+}
