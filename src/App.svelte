@@ -1,131 +1,27 @@
 <script lang="ts">
-  import Food from "./components/Food.svelte";
-  import Snake from "./components/Snake.svelte";
-  import { Config, Directions } from "./helpers/constants";
-  let foodLeft = 0;
-  let foodTop = 0;
-  let direction = "right";
-  let game_width = 0,game_height=0;
-  let snakeBodies = [];
+  import { EnumDimensions } from "./helpers/constants";
+  import type { ScreenStatus } from "./models/gameState";
+  import { screenStore } from "./stores/screenStore";
 
-  $: score = snakeBodies.length - 3;
-
-  $:GAME_WIDTH = game_width-50;
-  $:GAME_HEIGHT = game_height-50;
-
-  setInterval(() => {
-    snakeBodies.pop();
-
-    let { left, top } = snakeBodies[0];
-
-    if (direction === Directions.UP) {
-      top -= Config.BLOCK_SIZE;
-    } else if (direction === Directions.DOWN) {
-      top += Config.BLOCK_SIZE;
-    } else if (direction === Directions.LEFT) {
-      left -= Config.BLOCK_SIZE;
-    } else if (direction === Directions.RIGHT) {
-      left += Config.BLOCK_SIZE;
-    }
-
-    const newHead = { left, top };
-
-    snakeBodies = [newHead, ...snakeBodies];
-
-    if (isCollide(newHead, { left: foodLeft, top: foodTop })) {
-      moveFood();
-      snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
-    }
-
-    if (isGameOver()) {
-      resetGame();
-    }
-  }, 200);
-
-  function isCollide(a, b) {
-    return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
-  }
-
-  function moveFood() {
-    foodTop = Math.floor(Math.random() * (GAME_HEIGHT / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
-    foodLeft = Math.floor(Math.random() * (GAME_WIDTH / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
-  }
-
-  function resetGame() {
-    moveFood();
-    direction = Directions.RIGHT;
-    snakeBodies = [
-      {
-        left: Config.BLOCK_SIZE * 2,
-        top: 0,
-      },
-      {
-        left: Config.BLOCK_SIZE,
-        top: 0,
-      },
-      {
-        left: 0,
-        top: 0,
-      },
-    ];
-  }
-
-  function isGameOver() {
-    const snakeBodiesNoHead = snakeBodies.slice(1);
-
-    const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, snakeBodies[0]));
-
-    if (snakeCollisions.length > 0) {
-      return true;
-    }
-
-    const { top, left } = snakeBodies[0];
-
-    if (top >= GAME_HEIGHT || top < 0 || left < 0 || left >= GAME_WIDTH) {
-      return true;
-    }
-
-    return false;
-  }
-
-  function getDirectionFromKeyCode(keyCode) {
-    if (keyCode === 38) {
-      return Directions.UP;
-    } else if (keyCode === 39) {
-      return Directions.RIGHT;
-    } else if (keyCode === 37) {
-      return Directions.LEFT;
-    } else if (keyCode === 40) {
-      return Directions.DOWN;
-    }
-
-    return false;
-  }
-
-  function onKeyDown(e) {
-    const newDirection = getDirectionFromKeyCode(e.keyCode);
-    if (newDirection) {
-      direction = newDirection;
-    }
-  }
-
-  resetGame();
+  let currenScreen: ScreenStatus;
+  screenStore.subscribe((val: ScreenStatus) => {
+    currenScreen = val;
+  });
 </script>
 
-<main style="width:{GAME_WIDTH}px;height:{GAME_HEIGHT}px;">
-  <Snake {direction} {snakeBodies} />
-  <Food {foodLeft} {foodTop} />
-</main>
-<!-- <h2>Score : {score}</h2> -->
-<svelte:window on:keydown={onKeyDown} bind:innerWidth={game_width} bind:innerHeight={game_height} />
+<!-- <h1>{currenScreen.status}</h1> -->
+<div class="container" style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;">
+  <svelte:component this={currenScreen.component} />
+</div>
 
 <style>
-  main {
-    border: solid black 1px;
-    position: relative;
-    margin: 0px auto;
-    background-color: #ffffff;
-    width:100%;
-    height:100%;
+  .container {
+    margin: 10px;
+    background-color: black;
+    color: white;
+    /*   width:600px;
+    height:400px; */
+    display: flex;
+    flex-direction: column;
   }
 </style>
