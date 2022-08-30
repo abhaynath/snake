@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Config } from "../helpers/constants";
+  import { EnumDimensions } from "../../helpers/constants";
 
-  export let top = Config.BLOCK_SIZE;
-  export let left = Config.BLOCK_SIZE;
+  export let top = EnumDimensions.BLOCK_SIZE;
+  export let left = EnumDimensions.BLOCK_SIZE;
   export let isHead = false;
   export let direction = "right";
 </script>
 
-<div style="left: {left}px; top: {top}px;width:{Config.BLOCK_SIZE - 2}px;height:{Config.BLOCK_SIZE - 2}px;" class="snake-body {direction}">
+<div style="left: {left}px; top: {top}px;width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;" class="snake-body {direction}">
   {#if isHead}
     <div id="leftEye" class="eyes" />
     <div id="rightEye" class="eyes" />
@@ -16,8 +16,9 @@
 
 <style>
   .snake-body {
-    background-color: #3f0092;
-    border: 1px solid #35007a;
+    background: rgb(0, 0, 0);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(9, 34, 121, 1) 48%, rgba(0, 0, 0, 1) 100%);
+    /* border: 1px solid #35007a; */
     position: absolute;
     z-index: 3;
   }

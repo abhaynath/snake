@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Config } from "../../src/helpers/constants";
+  import { EnumDimensions } from "../../../src/helpers/constants";
 
   export let foodTop: number = 0;
   export let foodLeft: number = 0;
 </script>
 
-<div class="food" style="left: {foodLeft}px; top: {foodTop}px;width:{Config.BLOCK_SIZE - 2}px;height:{Config.BLOCK_SIZE - 2}px;" />
+<div class="food" style="left: {foodLeft}px; top: {foodTop}px;width:{EnumDimensions.BLOCK_SIZE - 2}px;height:{EnumDimensions.BLOCK_SIZE - 2}px;" />
 
 <style>
   .food {

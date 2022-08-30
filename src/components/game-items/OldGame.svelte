@@ -1,7 +1,7 @@
 <script lang="ts">
   import Food from "./Food.svelte";
   import Snake from "./Snake.svelte";
-  import { Config, Directions } from "../helpers/constants";
+  import { Directions, EnumDimensions } from "../../helpers/constants";
   let foodLeft = 0;
   let foodTop = 0;
   let direction = "right";
@@ -11,8 +11,8 @@
 
   $: score = snakeBodies.length - 3;
 
-  $: GAME_WIDTH = game_width;
-  $: GAME_HEIGHT = game_height;
+  $: GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
+  $: GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
 
   const intervalId = setInterval(() => {
     snakeBodies.pop();
@@ -20,13 +20,13 @@
     let { left, top } = snakeBodies[0];
 
     if (direction === Directions.UP) {
-      top -= Config.BLOCK_SIZE;
+      top -= EnumDimensions.BLOCK_SIZE;
     } else if (direction === Directions.DOWN) {
-      top += Config.BLOCK_SIZE;
+      top += EnumDimensions.BLOCK_SIZE;
     } else if (direction === Directions.LEFT) {
-      left -= Config.BLOCK_SIZE;
+      left -= EnumDimensions.BLOCK_SIZE;
     } else if (direction === Directions.RIGHT) {
-      left += Config.BLOCK_SIZE;
+      left += EnumDimensions.BLOCK_SIZE;
     }
 
     const newHead = { left, top };
@@ -49,8 +49,8 @@
   }
 
   function moveFood() {
-    foodTop = Math.floor(Math.random() * (GAME_HEIGHT / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
-    foodLeft = Math.floor(Math.random() * (GAME_WIDTH / Config.BLOCK_SIZE)) * Config.BLOCK_SIZE;
+    foodTop = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    foodLeft = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
   }
 
   function resetGame() {
@@ -58,11 +58,11 @@
     direction = Directions.RIGHT;
     snakeBodies = [
       {
-        left: Config.BLOCK_SIZE * 2,
+        left: EnumDimensions.BLOCK_SIZE * 2,
         top: 0,
       },
       {
-        left: Config.BLOCK_SIZE,
+        left: EnumDimensions.BLOCK_SIZE,
         top: 0,
       },
       {
