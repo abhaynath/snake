@@ -14,7 +14,7 @@ const createScreensStore = () => {
     { status: GameStatus.GAME_OVER, component: GameOverScreen },
   ];
 
-  let { update, subscribe } = writable<ScreenStatus>(screens[0]);
+  let { update, subscribe } = writable<ScreenStatus>(screens.find((d) => d.status == GameStatus.GAME_OVER));
 
   const startGame = () => {
     update((val: ScreenStatus) => {

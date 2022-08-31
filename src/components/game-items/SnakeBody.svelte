@@ -16,8 +16,8 @@
 
 <style>
   .snake-body {
-    background: rgb(0, 0, 0);
-    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(9, 34, 121, 1) 48%, rgba(0, 0, 0, 1) 100%);
+    background: #000000;
+    background: linear-gradient(0deg, #000000 0%, #092279 48%, #000000 100%);
     /* border: 1px solid #35007a; */
     position: absolute;
     z-index: 3;

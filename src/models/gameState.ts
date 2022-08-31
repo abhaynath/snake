@@ -9,3 +9,12 @@ export interface ScreenStatus {
   status: GameStatus;
   component: any;
 }
+export interface ScoreInfo {
+  playerName: string;
+  stage: number;
+  level: number;
+  score: number;
+  highScore: number;
+  food:number;
+  bonus: number;
+}

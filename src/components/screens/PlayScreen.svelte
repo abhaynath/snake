@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { scoreStore } from "./../../stores/scoreStore";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
   import { screenStore } from "../../../src/stores/screenStore";
-  import type { ScreenStatus } from "src/models/gameState";
+
+  import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
   let isGamePaused = false;
 
   import { Directions, EnumDimensions } from "../../../src/helpers/constants";
@@ -11,11 +13,15 @@
   const centerY = EnumDimensions.SCREEN_HEIGHT / 2;
 
   let currentScreen: ScreenStatus;
+  let currentScoreInfo: ScoreInfo;
   let key = "";
   let keyCode = 0;
 
   screenStore.subscribe((val: ScreenStatus) => {
     currentScreen = val;
+  });
+  scoreStore.subscribe((val: ScoreInfo) => {
+    currentScoreInfo = val;
   });
   const gameOver = () => {
     console.log("game over");
@@ -31,10 +37,9 @@
   let direction = Directions.RIGHT;
   let snakeBodies = [];
   let intervalId: any;
-  $: score = snakeBodies.length - 3;
 
-  $: GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
-  $: GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
+  const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
+  const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
 
   const startGame = () => {
     intervalId = setInterval(() => {
@@ -58,6 +63,7 @@
 
       if (isCollide(newHead, { left: foodLeft, top: foodTop })) {
         moveFood();
+        scoreStore.eatFood();
         snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
       }
 
@@ -159,7 +165,7 @@
   <Snake {direction} {snakeBodies} />
   <Food {foodLeft} {foodTop} />
 </main>
-<div class="score">{score}</div>
+<div class="score">{currentScoreInfo.score}</div>
 
 <svelte:window on:keydown={onKeyDown} />
 
@@ -169,13 +175,13 @@
     position: relative;
     margin: 0px auto;
     background-color: #cbfd89;
-  /*   width: 100%;
+    /*   width: 100%;
     height: 100%; */
   }
   .score {
     position: fixed;
-    top:10px;
-    right:10px;
+    top: 10px;
+    right: 10px;
     text-align: center;
     font-weight: bold;
     color: rebeccapurple;
