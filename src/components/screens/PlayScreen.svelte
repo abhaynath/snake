@@ -6,6 +6,8 @@
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
   import { Levels } from "../../../src/models/level";
+  import Bonus from "../game-items/Bonus.svelte";
+  import { getId } from "../../../src/helpers/common";
 
   let isGamePaused = false;
 
@@ -21,7 +23,11 @@
   const gameOver = () => {
     screenStore.gameOver();
   };
-
+  interface BonusItem {
+    id: string;
+    left: number;
+    top: number;
+  }
   interface SnakeItem {
     left: number;
     top: number;
@@ -30,6 +36,7 @@
   let foodTop = 0;
   let direction = Directions.RIGHT;
   let snakeBodies: SnakeItem[] = [];
+  let bonusList: BonusItem[] = [];
   let intervalId: string | number | NodeJS.Timeout;
 
   const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
@@ -70,6 +77,9 @@
         snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
         scoreStore.eatFood();
         moveFood();
+        if (currentScoreInfo.food % 5 == 0) {
+          addBonus();
+        }
         if (snakeBodies.length / Config.MAX_POINTS > 1 && snakeBodies.length % Config.MAX_POINTS == 0) {
           if (currentScoreInfo.level < Levels.length - 1) {
             nextLevel();
@@ -87,9 +97,9 @@
     }, delay);
   };
 
-  function isCollide(a: SnakeItem, b: SnakeItem) {
+  const isCollide = (a: SnakeItem, b: SnakeItem) => {
     return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
-  }
+  };
   const getNewFoodLocation = (): SnakeItem => {
     let top = 0,
       left = 0;
@@ -111,13 +121,13 @@
     }
     return { top, left };
   };
-  function moveFood() {
+  const moveFood = () => {
     const { top, left } = getNewFoodLocation();
     foodLeft = left;
     foodTop = top;
-  }
+  };
 
-  function resetGame() {
+  const resetGame = () => {
     moveFood();
     direction = Directions.RIGHT;
     snakeBodies = [
@@ -134,23 +144,15 @@
         top: 0,
       },
     ];
-  }
+  };
 
-  function isGameOver() {
+  const isGameOver = () => {
     const snakeBodiesNoHead = snakeBodies.slice(1);
-
     const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, snakeBodies[0]));
-
     if (snakeCollisions.length > 0) {
       return true;
     }
-
     const { top, left } = snakeBodies[0];
-
-    /* if (top >= GAME_HEIGHT || top < 0 || left < 0 || left >= GAME_WIDTH) {
-      return true;
-    }
- */
     if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
       snakeBodies[0].left = 0;
     }
@@ -163,14 +165,13 @@
     if (top >= GAME_HEIGHT && direction == Directions.DOWN) {
       snakeBodies[0].top = 0;
     }
-
     return false;
-  }
+  };
 
-  function pauseGame() {
+  const pauseGame = () => {
     clearInterval(intervalId);
-  }
-  function getDirectionFromKeyCode(keyCode: string) {
+  };
+  const getDirectionFromKeyCode = (keyCode: string) => {
     if (keyCode === KeyMap.UP && direction != Directions.DOWN) {
       return Directions.UP;
     } else if (keyCode === KeyMap.RIGHT && direction != Directions.LEFT) {
@@ -180,11 +181,10 @@
     } else if (keyCode === KeyMap.DOWN && direction != Directions.UP) {
       return Directions.DOWN;
     }
-
     return Directions.UNKNOWN;
-  }
+  };
 
-  function onKeyDown(e: KeyboardEvent) {
+  const onKeyDown = (e: KeyboardEvent) => {
     const keyCode = e.code;
     if (keyCode === KeyMap.SPACEBAR) {
       isGamePaused = !isGamePaused;
@@ -197,19 +197,43 @@
     if (isGamePaused) {
       return;
     }
-
     const newDirection = getDirectionFromKeyCode(keyCode);
     if (newDirection != Directions.UNKNOWN) {
       direction = newDirection;
     }
-  }
+  };
+
+  const onBonusFinished = (e: any) => {
+    console.log(`on bonus finished =${e.detail}`);
+    removeBonus(e.detail);
+  };
+  const addBonus = () => {
+    const id = getId();
+    let obj = { top: 0, left: 0, id: id };
+    obj.top = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    obj.left = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    bonusList.push(obj);
+  };
+  const removeBonus = (id: string) => {
+    const index = bonusList.findIndex((d) => d.id == id);
+    if (index != -1) {
+      bonusList.splice(index, 1);
+      bonusList = bonusList;
+    }
+  };
   startGame();
   resetGame();
+   addBonus();
 </script>
 
 <main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;background:{Levels[currentScoreInfo.level].bg}">
   <Snake {direction} {snakeBodies} />
-  <Food {foodLeft} {foodTop} />
+  <Food left={foodLeft} top={foodTop} />
+  {#each bonusList as bonus (bonus.id)}
+    <Bonus id={bonus.id} left={bonus.left} top={bonus.top} on:bonusFinished={onBonusFinished} />
+  {/each}
+
+  <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
 </main>
 <div class="score">{currentScoreInfo.level} : {currentScoreInfo.score}</div>
 
@@ -220,9 +244,6 @@
     border: solid black 1px;
     position: relative;
     margin: 0px auto;
-    /* background-color: #cbfd89; */
-    /*   width: 100%;
-    height: 100%; */
   }
   .score {
     position: fixed;

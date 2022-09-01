@@ -13,11 +13,12 @@ export enum EnumDimensions {
 export enum Config {
   DELAY = 50,
   MAX_POINTS = 10,
+  BONUS_TIME = 5000,
 }
 export enum KeyMap {
-  UP = 'ArrowUp',
-  LEFT = 'ArrowLeft',
-  RIGHT = 'ArrowRight',
-  DOWN = 'ArrowDown',
-  SPACEBAR = 'Space',
+  UP = "ArrowUp",
+  LEFT = "ArrowLeft",
+  RIGHT = "ArrowRight",
+  DOWN = "ArrowDown",
+  SPACEBAR = "Space",
 }
