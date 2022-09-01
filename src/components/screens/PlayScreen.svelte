@@ -78,10 +78,31 @@
   function isCollide(a, b) {
     return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
   }
+  const getNewFoodLocation = () => {
+    let top = 0,
+      left = 0;
+    while (true) {
+      top = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+      left = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
 
+      let tx = snakeBodies.findIndex((d) => {
+        d.top == top;
+      });
+
+      let lx = snakeBodies.findIndex((d) => {
+        d.left == left;
+      });
+      console.log(tx, lx);
+      if (tx == -1 && lx == -1) {
+        break;
+      }
+    }
+    return { top, left };
+  };
   function moveFood() {
-    foodTop = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
-    foodLeft = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    const { top, left } = getNewFoodLocation();
+    foodLeft = left;
+    foodTop = top;
   }
 
   function resetGame() {
@@ -114,8 +135,21 @@
 
     const { top, left } = snakeBodies[0];
 
-    if (top >= GAME_HEIGHT || top < 0 || left < 0 || left >= GAME_WIDTH) {
+    /* if (top >= GAME_HEIGHT || top < 0 || left < 0 || left >= GAME_WIDTH) {
       return true;
+    }
+ */
+    if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
+      snakeBodies[0].left = 0;
+    }
+    if (left < 0 && direction == Directions.LEFT) {
+      snakeBodies[0].left = GAME_WIDTH - EnumDimensions.BLOCK_SIZE;
+    }
+    if (top < 0 && direction == Directions.UP) {
+      snakeBodies[0].top = GAME_HEIGHT - EnumDimensions.BLOCK_SIZE;
+    }
+    if (top >= GAME_HEIGHT && direction == Directions.DOWN) {
+      snakeBodies[0].top = 0;
     }
 
     return false;
