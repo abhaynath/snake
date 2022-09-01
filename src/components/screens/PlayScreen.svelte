@@ -2,7 +2,7 @@
   import { scoreStore } from "./../../stores/scoreStore";
   import { screenStore } from "../../../src/stores/screenStore";
   import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
-  import { Directions, EnumDimensions } from "../../../src/helpers/constants";
+  import { Directions, EnumDimensions, Config, KeyMap } from "../../../src/helpers/constants";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
   import { Levels } from "../../../src/models/level";
@@ -19,7 +19,6 @@
     currentScoreInfo = val;
   });
   const gameOver = () => {
-    console.log("game over");
     screenStore.gameOver();
   };
 
@@ -31,7 +30,7 @@
   let foodTop = 0;
   let direction = Directions.RIGHT;
   let snakeBodies: SnakeItem[] = [];
-  let intervalId: any;
+  let intervalId: string | number | NodeJS.Timeout;
 
   const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
   const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
@@ -45,8 +44,8 @@
     resetGame();
   };
   const startGame = () => {
-    let delay = 5 - currentScoreInfo.level;
-    delay = delay * 50;
+    let delay = Levels.length - currentScoreInfo.level;
+    delay = delay * Config.DELAY;
 
     intervalId = setInterval(() => {
       snakeBodies.pop();
@@ -71,7 +70,7 @@
         snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
         scoreStore.eatFood();
         moveFood();
-        if (snakeBodies.length / 5 > 1 && snakeBodies.length % 5 == 0) {
+        if (snakeBodies.length / Config.MAX_POINTS > 1 && snakeBodies.length % Config.MAX_POINTS == 0) {
           if (currentScoreInfo.level < Levels.length - 1) {
             nextLevel();
           } else {
@@ -169,17 +168,16 @@
   }
 
   function pauseGame() {
-    console.log("pauseGame");
     clearInterval(intervalId);
   }
-  function getDirectionFromKeyCode(keyCode: number) {
-    if (keyCode === 38 && direction != Directions.DOWN) {
+  function getDirectionFromKeyCode(keyCode: string) {
+    if (keyCode === KeyMap.UP && direction != Directions.DOWN) {
       return Directions.UP;
-    } else if (keyCode === 39 && direction != Directions.LEFT) {
+    } else if (keyCode === KeyMap.RIGHT && direction != Directions.LEFT) {
       return Directions.RIGHT;
-    } else if (keyCode === 37 && direction != Directions.RIGHT) {
+    } else if (keyCode === KeyMap.LEFT && direction != Directions.RIGHT) {
       return Directions.LEFT;
-    } else if (keyCode === 40 && direction != Directions.UP) {
+    } else if (keyCode === KeyMap.DOWN && direction != Directions.UP) {
       return Directions.DOWN;
     }
 
@@ -187,7 +185,8 @@
   }
 
   function onKeyDown(e: KeyboardEvent) {
-    if (e.keyCode === 32) {
+    const keyCode = e.code;
+    if (keyCode === KeyMap.SPACEBAR) {
       isGamePaused = !isGamePaused;
       if (isGamePaused) {
         pauseGame();
@@ -199,7 +198,7 @@
       return;
     }
 
-    const newDirection = getDirectionFromKeyCode(e.keyCode);
+    const newDirection = getDirectionFromKeyCode(keyCode);
     if (newDirection != Directions.UNKNOWN) {
       direction = newDirection;
     }
