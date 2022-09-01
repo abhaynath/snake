@@ -1,21 +1,16 @@
 <script lang="ts">
   import { scoreStore } from "./../../stores/scoreStore";
+  import { screenStore } from "../../../src/stores/screenStore";
+  import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
+  import { Directions, EnumDimensions } from "../../../src/helpers/constants";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
-  import { screenStore } from "../../../src/stores/screenStore";
+  import { Levels } from "../../../src/models/level";
 
-  import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
   let isGamePaused = false;
-
-  import { Directions, EnumDimensions } from "../../../src/helpers/constants";
-
-  const centerX = EnumDimensions.SCREEN_WIDTH / 2;
-  const centerY = EnumDimensions.SCREEN_HEIGHT / 2;
 
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
-  let key = "";
-  let keyCode = 0;
 
   screenStore.subscribe((val: ScreenStatus) => {
     currentScreen = val;
@@ -28,20 +23,31 @@
     screenStore.gameOver();
   };
 
-  const resumeGame = () => {
-    screenStore.resumeGame();
-  };
-
+  interface SnakeItem {
+    left: number;
+    top: number;
+  }
   let foodLeft = 0;
   let foodTop = 0;
   let direction = Directions.RIGHT;
-  let snakeBodies = [];
+  let snakeBodies: SnakeItem[] = [];
   let intervalId: any;
 
   const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
   const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
 
+  const nextLevel = () => {
+    scoreStore.nextLevel();
+    scoreStore.resetScore();
+    clearInterval(intervalId);
+
+    startGame();
+    resetGame();
+  };
   const startGame = () => {
+    let delay = 5 - currentScoreInfo.level;
+    delay = delay * 50;
+
     intervalId = setInterval(() => {
       snakeBodies.pop();
 
@@ -57,14 +63,21 @@
         left += EnumDimensions.BLOCK_SIZE;
       }
 
-      const newHead = { left, top };
+      const newHead: SnakeItem = { left, top };
 
       snakeBodies = [newHead, ...snakeBodies];
 
       if (isCollide(newHead, { left: foodLeft, top: foodTop })) {
-        moveFood();
-        scoreStore.eatFood();
         snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
+        scoreStore.eatFood();
+        moveFood();
+        if (snakeBodies.length / 5 > 1 && snakeBodies.length % 5 == 0) {
+          if (currentScoreInfo.level < Levels.length - 1) {
+            nextLevel();
+          } else {
+            screenStore.allLevelsCleared();
+          }
+        }
       }
 
       if (isGameOver()) {
@@ -72,13 +85,13 @@
         resetGame();
         gameOver();
       }
-    }, 200);
+    }, delay);
   };
 
-  function isCollide(a, b) {
+  function isCollide(a: SnakeItem, b: SnakeItem) {
     return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
   }
-  const getNewFoodLocation = () => {
+  const getNewFoodLocation = (): SnakeItem => {
     let top = 0,
       left = 0;
     while (true) {
@@ -92,7 +105,7 @@
       let lx = snakeBodies.findIndex((d) => {
         d.left == left;
       });
-      console.log(tx, lx);
+
       if (tx == -1 && lx == -1) {
         break;
       }
@@ -159,21 +172,21 @@
     console.log("pauseGame");
     clearInterval(intervalId);
   }
-  function getDirectionFromKeyCode(keyCode) {
-    if (keyCode === 38) {
+  function getDirectionFromKeyCode(keyCode: number) {
+    if (keyCode === 38 && direction != Directions.DOWN) {
       return Directions.UP;
-    } else if (keyCode === 39) {
+    } else if (keyCode === 39 && direction != Directions.LEFT) {
       return Directions.RIGHT;
-    } else if (keyCode === 37) {
+    } else if (keyCode === 37 && direction != Directions.RIGHT) {
       return Directions.LEFT;
-    } else if (keyCode === 40) {
+    } else if (keyCode === 40 && direction != Directions.UP) {
       return Directions.DOWN;
     }
 
     return Directions.UNKNOWN;
   }
 
-  function onKeyDown(e) {
+  function onKeyDown(e: KeyboardEvent) {
     if (e.keyCode === 32) {
       isGamePaused = !isGamePaused;
       if (isGamePaused) {
@@ -195,11 +208,11 @@
   resetGame();
 </script>
 
-<main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;">
+<main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;background:{Levels[currentScoreInfo.level].bg}">
   <Snake {direction} {snakeBodies} />
   <Food {foodLeft} {foodTop} />
 </main>
-<div class="score">{currentScoreInfo.score}</div>
+<div class="score">{currentScoreInfo.level} : {currentScoreInfo.score}</div>
 
 <svelte:window on:keydown={onKeyDown} />
 
@@ -208,7 +221,7 @@
     border: solid black 1px;
     position: relative;
     margin: 0px auto;
-    background-color: #cbfd89;
+    /* background-color: #cbfd89; */
     /*   width: 100%;
     height: 100%; */
   }

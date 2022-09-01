@@ -4,6 +4,7 @@ export enum GameStatus {
   PAUSED = "PAUSED",
   RESUME = "RESUME",
   GAME_OVER = "GAME OVER",
+  ALL_LEVELS_CLEARED = "ALL_LEVELS_CLEARED",
 }
 export interface ScreenStatus {
   status: GameStatus;
@@ -15,6 +16,6 @@ export interface ScoreInfo {
   level: number;
   score: number;
   highScore: number;
-  food:number;
+  food: number;
   bonus: number;
 }

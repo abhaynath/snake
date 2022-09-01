@@ -27,6 +27,13 @@ const createScoreStore = () => {
     });
   };
 
-  return { subscribe, resetScore, eatFood };
+  const nextLevel = () => {
+    update((val: ScoreInfo) => {
+      val.level = val.level + 1;
+      return val;
+    });
+  };
+
+  return { subscribe, resetScore, eatFood, nextLevel };
 };
 export let scoreStore = createScoreStore();
