@@ -27,6 +27,12 @@ const createScoreStore = () => {
     });
   };
 
+  const getBonus = () => {
+    update((val: ScoreInfo) => {
+      val.bonus = val.bonus + 1;
+      return val;
+    });
+  };
   const nextLevel = () => {
     update((val: ScoreInfo) => {
       val.level = val.level + 1;
@@ -34,6 +40,6 @@ const createScoreStore = () => {
     });
   };
 
-  return { subscribe, resetScore, eatFood, nextLevel };
+  return { subscribe, resetScore, eatFood, getBonus, nextLevel };
 };
 export let scoreStore = createScoreStore();

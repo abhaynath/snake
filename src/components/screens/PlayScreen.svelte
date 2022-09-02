@@ -73,6 +73,13 @@
 
       snakeBodies = [newHead, ...snakeBodies];
 
+      bonusList.forEach((d: BonusItem) => {
+        if (isCollide(newHead, d)) {
+          removeBonus(d.id);
+          scoreStore.getBonus();
+        }
+      });
+
       if (isCollide(newHead, { left: foodLeft, top: foodTop })) {
         snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
         scoreStore.eatFood();
@@ -237,7 +244,10 @@
 
   <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
 </main>
-<div class="score">{currentScoreInfo.level} : {currentScoreInfo.score}</div>
+<div class="score">
+  <div>{currentScoreInfo.level} : {currentScoreInfo.score}</div>
+  <div>{currentScoreInfo.bonus}</div>
+</div>
 
 <svelte:window on:keydown={onKeyDown} />
 

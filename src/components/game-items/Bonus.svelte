@@ -10,7 +10,7 @@
   export let id;
 
   onMount(() => {
-    setTimeout(() => {
+    const intervalId = setTimeout(() => {
       dispatch("bonusFinished", id);
     }, Config.BONUS_TIME);
   });

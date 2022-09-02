@@ -16,7 +16,7 @@ const createScreensStore = () => {
     { status: GameStatus.ALL_LEVELS_CLEARED, component: CongratScreen },
   ];
 
-  let { update, subscribe } = writable<ScreenStatus>(screens.find((d) => d.status == GameStatus.RUNNING));
+  let { update, subscribe } = writable<ScreenStatus>(screens.find((d) => d.status == GameStatus.GAME_OVER));
 
   const startGame = () => {
     update((val: ScreenStatus) => {
