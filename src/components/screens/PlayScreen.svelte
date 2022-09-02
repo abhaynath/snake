@@ -9,6 +9,7 @@
   import Bonus from "../game-items/Bonus.svelte";
   import { getId } from "../../../src/helpers/common";
   import MessageBox from "../game-items/MessageBox.svelte";
+  import Wall from "../game-items/Wall.svelte";
 
   let isGamePaused = false;
   let isMessageVisible = false;
@@ -255,6 +256,7 @@
 </script>
 
 <main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;background:{Levels[currentScoreInfo.level].bg}">
+  <Wall />
   <Snake {direction} {snakeBodies} />
   <Food left={foodLeft} top={foodTop} />
   {#each bonusList as bonus (bonus.id)}
