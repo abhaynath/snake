@@ -84,6 +84,7 @@
           if (currentScoreInfo.level < Levels.length - 1) {
             nextLevel();
           } else {
+            clearInterval(intervalId);
             screenStore.allLevelsCleared();
           }
         }
@@ -213,6 +214,7 @@
     obj.top = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
     obj.left = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
     bonusList.push(obj);
+    bonusList = bonusList;
   };
   const removeBonus = (id: string) => {
     const index = bonusList.findIndex((d) => d.id == id);
@@ -223,7 +225,7 @@
   };
   startGame();
   resetGame();
-   addBonus();
+  //  addBonus();
 </script>
 
 <main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;background:{Levels[currentScoreInfo.level].bg}">
