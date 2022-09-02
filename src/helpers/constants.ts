@@ -23,8 +23,7 @@ export enum KeyMap {
   DOWN = "ArrowDown",
   SPACEBAR = "Space",
 }
-export enum EnumMessages{
-  NEXT_LEVEL="Next Level",
-  GAME_OVER="Game Over",
-
+export enum EnumMessages {
+  NEXT_LEVEL = "Next Level",
+  GAME_OVER = "Game Over",
 }
