@@ -24,6 +24,7 @@
   scoreStore.subscribe((val: ScoreInfo) => {
     currentScoreInfo = val;
   });
+  $: bricks = Levels[currentScoreInfo.level - 1].wall;
   const gameOver = () => {
     showMessage(EnumMessages.GAME_OVER);
     clearInterval(intervalId);
@@ -180,6 +181,11 @@
     if (snakeCollisions.length > 0) {
       return true;
     }
+    bricks.forEach((brick) => {
+      if (isCollide(snakeBodies[0], brick)) {
+        return true;
+      }
+    });
     const { top, left } = snakeBodies[0];
     if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
       snakeBodies[0].left = 0;
