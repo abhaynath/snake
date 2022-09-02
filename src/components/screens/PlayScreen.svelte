@@ -2,14 +2,17 @@
   import { scoreStore } from "./../../stores/scoreStore";
   import { screenStore } from "../../../src/stores/screenStore";
   import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
-  import { Directions, EnumDimensions, Config, KeyMap } from "../../../src/helpers/constants";
+  import { Directions, EnumDimensions, Config, KeyMap, EnumMessages } from "../../../src/helpers/constants";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
   import { Levels } from "../../../src/models/level";
   import Bonus from "../game-items/Bonus.svelte";
   import { getId } from "../../../src/helpers/common";
+  import MessageBox from "../game-items/MessageBox.svelte";
 
   let isGamePaused = false;
+  let isMessageVisible = false;
+  let message = EnumMessages.NEXT_LEVEL;
 
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
@@ -21,7 +24,13 @@
     currentScoreInfo = val;
   });
   const gameOver = () => {
-    screenStore.gameOver();
+    showMessage(EnumMessages.GAME_OVER);
+    clearInterval(intervalId);
+    setTimeout(() => {
+      hideMessage();
+      resetGame();
+      screenStore.gameOver();
+    }, Config.MESSAGE_TIME);
   };
   interface BonusItem {
     id: string;
@@ -42,13 +51,25 @@
   const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
   const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
 
+  const showMessage = (msg: EnumMessages) => {
+    message = msg;
+    isMessageVisible = true;
+  };
+  const hideMessage = () => {
+    isMessageVisible = false;
+    message = EnumMessages.GAME_OVER;
+  };
   const nextLevel = () => {
-    scoreStore.nextLevel();
-    scoreStore.resetScore();
+    showMessage(EnumMessages.NEXT_LEVEL);
     clearInterval(intervalId);
+    setTimeout(() => {
+      hideMessage();
+      scoreStore.nextLevel();
+      scoreStore.resetScore();
 
-    startGame();
-    resetGame();
+      startGame();
+      resetGame();
+    }, Config.MESSAGE_TIME);
   };
   const startGame = () => {
     let delay = Levels.length - currentScoreInfo.level;
@@ -98,8 +119,6 @@
       }
 
       if (isGameOver()) {
-        clearInterval(intervalId);
-        resetGame();
         gameOver();
       }
     }, delay);
@@ -243,6 +262,9 @@
   {/each}
 
   <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
+  {#if isMessageVisible == true}
+    <MessageBox {message} />
+  {/if}
 </main>
 <div class="score">
   <div>{currentScoreInfo.level} : {currentScoreInfo.score}</div>

@@ -14,6 +14,7 @@ export enum Config {
   DELAY = 50,
   MAX_POINTS = 10,
   BONUS_TIME = 5000,
+  MESSAGE_TIME = 3000,
 }
 export enum KeyMap {
   UP = "ArrowUp",
@@ -21,4 +22,9 @@ export enum KeyMap {
   RIGHT = "ArrowRight",
   DOWN = "ArrowDown",
   SPACEBAR = "Space",
+}
+export enum EnumMessages{
+  NEXT_LEVEL="Next Level",
+  GAME_OVER="Game Over",
+
 }
