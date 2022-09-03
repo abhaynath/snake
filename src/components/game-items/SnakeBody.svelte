@@ -4,49 +4,58 @@
   export let top = EnumDimensions.BLOCK_SIZE;
   export let left = EnumDimensions.BLOCK_SIZE;
   export let isHead = false;
+  export let isTail = false;
   export let direction = "right";
 </script>
 
-<div style="left: {left}px; top: {top}px;width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;" class="snake-body {direction}">
+<div style="left: {left}px; top: {top}px;width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;" class="snake-body">
   {#if isHead}
-    <div id="leftEye" class="eyes" />
-    <div id="rightEye" class="eyes" />
+    <div class="head {direction}">
+      <svg viewBox="0 0 258 258">
+        <g>
+          <rect opacity="0" fill="#FFFFFF" width="258" height="258" />
+          <path
+            fill="#0037FF"
+            d="M147.5,29.2C111.6,29.2,80.1,48,62.6,77H0v104h62.6c17.5,28,49,47.3,84.9,47.3c55,0,99.6-44.6,99.6-99.6
+            S202.5,29.2,147.5,29.2z"
+          />
+          <circle fill="#FFF800" stroke="#000000" stroke-miterlimit="10" cx="184.3" cy="84.5" r="21.8" />
+          <circle fill="#FFF800" stroke="#000000" stroke-miterlimit="10" cx="184.3" cy="164.5" r="21.8" />
+        </g>
+      </svg>
+    </div>
+  {:else if isTail}
+    <svg viewBox="0 0 258 258">
+      <polygon fill="#0037FF" points="258,179 0,128 0,128 258,77 " />
+    </svg>
+  {:else}
+    <svg viewBox="0 0 258 258">
+      <rect y="77" fill="#0037FF" width="258" height="102" />
+    </svg>
   {/if}
 </div>
 
 <style>
   .snake-body {
-    background: #000000;
-    background: linear-gradient(0deg, #000000 0%, #092279 48%, #000000 100%);
-    /* border: 1px solid #35007a; */
     position: absolute;
     z-index: 3;
   }
-  .eyes {
+  .head {
     position: absolute;
-    background-color: #81dbff;
-    border-radius: 50%;
-    width: 20%;
-    height: 20%;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
   }
-  #leftEye {
-    left: 70%;
-    top: 10%;
-  }
-  #rightEye {
-    left: 70%;
-    bottom: 10%;
-  }
-  .snake-body.right {
+  .head.right {
     transform: rotate(0deg);
   }
-  .snake-body.left {
+  .head.left {
     transform: rotate(180deg);
   }
-  .snake-body.up {
+  .head.up {
     transform: rotate(270deg);
   }
-  .snake-body.down {
+  .head.down {
     transform: rotate(90deg);
   }
 </style>

@@ -5,5 +5,5 @@
 </script>
 
 {#each snakeBodies as snakeBody, i}
-  <SnakeBody isHead={i == 0} top={snakeBody.top} left={snakeBody.left} {direction} />
+  <SnakeBody isHead={i == 0} isTail={i==snakeBodies.length-1} top={snakeBody.top} left={snakeBody.left} {direction} />
 {/each}
