@@ -67,5 +67,6 @@
     background-color: #ff9900;
     border-radius: 50%; */
     z-index: 0;
+    /* transition: all 250ms linear; */
   }
 </style>
