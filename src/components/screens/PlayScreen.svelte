@@ -15,6 +15,7 @@
   let isGamePaused = false;
   let isMessageVisible = false;
   let message = EnumMessages.NEXT_LEVEL;
+  let isProcessing = false;
 
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
@@ -71,7 +72,9 @@
     delay = delay * Config.DELAY;
 
     intervalId = setInterval(() => {
+      isProcessing = true;
       if (isGameOver()) {
+        isProcessing = false;
         gameOver();
       }
       checkBoundaries();
@@ -116,6 +119,7 @@
           }
         }
       }
+      isProcessing = false;
     }, 1000);
   };
 
@@ -218,6 +222,9 @@
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
+    if (isProcessing) {
+      return;
+    }
     const keyCode = e.code;
     if (keyCode === KeyMap.SPACEBAR) {
       isGamePaused = !isGamePaused;
