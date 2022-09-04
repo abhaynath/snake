@@ -10,6 +10,7 @@
   import { getId } from "../../../src/helpers/common";
   import MessageBox from "../game-items/MessageBox.svelte";
   import Wall from "../game-items/Wall.svelte";
+  import type { BonusItem, SnakeItem } from "../../../src/models/play-screen";
 
   let isGamePaused = false;
   let isMessageVisible = false;
@@ -34,15 +35,7 @@
       screenStore.gameOver();
     }, Config.MESSAGE_TIME);
   };
-  interface BonusItem {
-    id: string;
-    left: number;
-    top: number;
-  }
-  interface SnakeItem {
-    left: number;
-    top: number;
-  }
+
   let foodLeft = 0;
   let foodTop = 0;
   let direction = Directions.RIGHT;
@@ -129,6 +122,7 @@
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
     return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
   };
+
   const getNewFoodLocation = (): SnakeItem => {
     let top = 0,
       left = 0;

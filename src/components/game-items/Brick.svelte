@@ -43,17 +43,7 @@
       </g>
     </svg>
   {:else if data.type == BrickTypes.CONCRETE}
-    <svg
-      version="1.1"
-      id="Layer_1"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      x="0px"
-      y="0px"
-      viewBox="0 0 563 563"
-      enable-background="new 0 0 563 563"
-      xml:space="preserve"
-    >
+    <svg viewBox="0 0 563 563">
       <g>
         <linearGradient id="concrete_SVGID_1_" gradientUnits="userSpaceOnUse" x1="4" y1="96.5" x2="281" y2="96.5">
           <stop offset="0" style="stop-color:#998675" />
