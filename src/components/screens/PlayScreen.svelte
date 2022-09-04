@@ -152,23 +152,40 @@
   const getNewFoodLocation = (): SnakeItem => {
     let top = 0,
       left = 0;
-    while (true) {
-      top = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
-      left = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    let foodLoc = { top, left };
+    const MAX_ROW = Math.floor(GAME_HEIGHT / EnumDimensions.BLOCK_SIZE);
+    const MAX_COLUMN = Math.floor(GAME_WIDTH / EnumDimensions.BLOCK_SIZE);
+    console.log(MAX_COLUMN, MAX_ROW);
+    let isFound = true;
 
-      let tx = snakeBodies.findIndex((d) => {
-        d.top == top;
-      });
+    top = Math.floor(Math.random() * MAX_ROW) * EnumDimensions.BLOCK_SIZE;
+    left = Math.floor(Math.random() * MAX_COLUMN) * EnumDimensions.BLOCK_SIZE;
+    foodLoc = { top, left };
+    console.log("162", foodLoc);
 
-      let lx = snakeBodies.findIndex((d) => {
-        d.left == left;
-      });
+    const arr3 = [];
+    snakeBodies.forEach((d) => {
+      arr3.push(d);
+    });
 
-      if (tx == -1 && lx == -1) {
-        break;
+    console.log(arr3);
+    /*  while (isFound) {
+      top = Math.floor(Math.random() * MAX_COLUMN) * EnumDimensions.BLOCK_SIZE;
+      left = Math.floor(Math.random() * MAX_ROW) * EnumDimensions.BLOCK_SIZE;
+      console.log(top, left);
+
+      foodLoc = { top, left };
+     
+      const joinedArr = [...snakeBodies,...bricks];
+
+      for (let i = 0; i < joinedArr.length; i++) {
+        if (!isCollide(joinedArr[i], foodLoc)) {
+          isFound = true;
+          break;
+        }
       }
-    }
-    return { top, left };
+    } */
+    return foodLoc;
   };
   const moveFood = () => {
     const { top, left } = getNewFoodLocation();
