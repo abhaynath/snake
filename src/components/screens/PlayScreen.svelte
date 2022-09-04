@@ -67,6 +67,59 @@
       resetGame();
     }, Config.MESSAGE_TIME);
   };
+  const checkWallCollision = (head: SnakeItem) => {
+    bricks.forEach((brick) => {
+      if (isCollide(brick, head)) {
+        isProcessing = false;
+        gameOver();
+      }
+    });
+  };
+  const checkBonusCollision = (head: SnakeItem) => {
+    bonusList.forEach((d: BonusItem) => {
+      if (isCollide(head, d)) {
+        removeBonus(d.id);
+        scoreStore.getBonus();
+      }
+    });
+  };
+  const checkNextLevel = () => {
+    if (snakeBodies.length / Config.MAX_POINTS > 1 && snakeBodies.length % Config.MAX_POINTS == 0) {
+      if (currentScoreInfo.level < Levels.length - 1) {
+        nextLevel();
+      } else {
+        clearInterval(intervalId);
+        screenStore.allLevelsCleared();
+      }
+    }
+  };
+  const getNextHead = () => {
+    let { left, top } = snakeBodies[0];
+
+    if (direction === Directions.UP) {
+      top -= EnumDimensions.BLOCK_SIZE;
+    } else if (direction === Directions.DOWN) {
+      top += EnumDimensions.BLOCK_SIZE;
+    } else if (direction === Directions.LEFT) {
+      left -= EnumDimensions.BLOCK_SIZE;
+    } else if (direction === Directions.RIGHT) {
+      left += EnumDimensions.BLOCK_SIZE;
+    }
+
+    const newHead: SnakeItem = { left, top };
+    return newHead;
+  };
+
+  const checkFoodEaten = (head: SnakeItem) => {
+    if (isCollide(head, { left: foodLeft, top: foodTop })) {
+      snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
+      scoreStore.eatFood();
+      moveFood();
+      if (currentScoreInfo.food % 5 == 0) {
+        addBonus();
+      }
+    }
+  };
   const startGame = () => {
     let delay = Levels.length - currentScoreInfo.level;
     delay = delay * Config.DELAY;
@@ -78,49 +131,18 @@
         gameOver();
       }
       checkBoundaries();
+
+      const newHead = getNextHead();
+
+      // checkWallCollision(newHead);
+      checkBonusCollision(newHead);
       snakeBodies.pop();
-
-      let { left, top } = snakeBodies[0];
-
-      if (direction === Directions.UP) {
-        top -= EnumDimensions.BLOCK_SIZE;
-      } else if (direction === Directions.DOWN) {
-        top += EnumDimensions.BLOCK_SIZE;
-      } else if (direction === Directions.LEFT) {
-        left -= EnumDimensions.BLOCK_SIZE;
-      } else if (direction === Directions.RIGHT) {
-        left += EnumDimensions.BLOCK_SIZE;
-      }
-
-      const newHead: SnakeItem = { left, top };
-
       snakeBodies = [newHead, ...snakeBodies];
 
-      bonusList.forEach((d: BonusItem) => {
-        if (isCollide(newHead, d)) {
-          removeBonus(d.id);
-          scoreStore.getBonus();
-        }
-      });
-
-      if (isCollide(newHead, { left: foodLeft, top: foodTop })) {
-        snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
-        scoreStore.eatFood();
-        moveFood();
-        if (currentScoreInfo.food % 5 == 0) {
-          addBonus();
-        }
-        if (snakeBodies.length / Config.MAX_POINTS > 1 && snakeBodies.length % Config.MAX_POINTS == 0) {
-          if (currentScoreInfo.level < Levels.length - 1) {
-            nextLevel();
-          } else {
-            clearInterval(intervalId);
-            screenStore.allLevelsCleared();
-          }
-        }
-      }
+      checkFoodEaten(newHead);
+      checkNextLevel();
       isProcessing = false;
-    }, 1000);
+    }, delay);
   };
 
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
@@ -196,11 +218,6 @@
     if (snakeCollisions.length > 0) {
       return true;
     }
-    bricks.forEach((brick) => {
-      if (isCollide(snakeBodies[0], brick)) {
-        return true;
-      }
-    });
 
     return false;
   };
@@ -244,7 +261,6 @@
   };
 
   const onBonusFinished = (e: any) => {
-    console.log(`on bonus finished =${e.detail}`);
     removeBonus(e.detail);
   };
   const addBonus = () => {
