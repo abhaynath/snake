@@ -71,6 +71,10 @@
     delay = delay * Config.DELAY;
 
     intervalId = setInterval(() => {
+      if (isGameOver()) {
+        gameOver();
+      }
+      checkBoundaries();
       snakeBodies.pop();
 
       let { left, top } = snakeBodies[0];
@@ -112,11 +116,7 @@
           }
         }
       }
-
-      if (isGameOver()) {
-        gameOver();
-      }
-    }, delay);
+    }, 1000);
   };
 
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
@@ -169,6 +169,23 @@
     ];
   };
 
+  const checkBoundaries = () => {
+    const { top, left } = snakeBodies[0];
+    const right = left + EnumDimensions.BLOCK_SIZE;
+    const bottom = top + EnumDimensions.BLOCK_SIZE;
+    if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
+      snakeBodies[0].left = -2 * EnumDimensions.BLOCK_SIZE;
+    }
+    if (left < 0 && direction == Directions.LEFT) {
+      snakeBodies[0].left = GAME_WIDTH + EnumDimensions.BLOCK_SIZE;
+    }
+    if (top < 0 && direction == Directions.UP) {
+      snakeBodies[0].top = GAME_HEIGHT + EnumDimensions.BLOCK_SIZE;
+    }
+    if (top >= GAME_HEIGHT && direction == Directions.DOWN) {
+      snakeBodies[0].top = -2 * EnumDimensions.BLOCK_SIZE;
+    }
+  };
   const isGameOver = () => {
     const snakeBodiesNoHead = snakeBodies.slice(1);
     const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, snakeBodies[0]));
@@ -180,19 +197,7 @@
         return true;
       }
     });
-    const { top, left } = snakeBodies[0];
-    if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
-      snakeBodies[0].left = 0;
-    }
-    if (left < 0 && direction == Directions.LEFT) {
-      snakeBodies[0].left = GAME_WIDTH - EnumDimensions.BLOCK_SIZE;
-    }
-    if (top < 0 && direction == Directions.UP) {
-      snakeBodies[0].top = GAME_HEIGHT - EnumDimensions.BLOCK_SIZE;
-    }
-    if (top >= GAME_HEIGHT && direction == Directions.DOWN) {
-      snakeBodies[0].top = 0;
-    }
+
     return false;
   };
 
