@@ -19,12 +19,12 @@ export const Levels: Level[] = [
   {
     bg: "#affbaf",
     wall: [
-      { type: BrickTypes.DEFAULT, top: EnumDimensions.BLOCK_SIZE * 2, left: EnumDimensions.BLOCK_SIZE * 2 },
-      { type: BrickTypes.ROCK, top: EnumDimensions.BLOCK_SIZE * 2, left: EnumDimensions.BLOCK_SIZE * 3 },
-      { type: BrickTypes.ROCK, top: EnumDimensions.BLOCK_SIZE * 2, left: EnumDimensions.BLOCK_SIZE * 4 },
-      { type: BrickTypes.DEFAULT, top: EnumDimensions.BLOCK_SIZE * 2, left: EnumDimensions.BLOCK_SIZE * 5 },
-      { type: BrickTypes.CONCRETE, top: EnumDimensions.BLOCK_SIZE, left: EnumDimensions.BLOCK_SIZE * 3 },
-      { type: BrickTypes.CONCRETE, top: EnumDimensions.BLOCK_SIZE * 3, left: EnumDimensions.BLOCK_SIZE * 4 },
+      { type: BrickTypes.DEFAULT, top: 2, left: 2 },
+      { type: BrickTypes.ROCK, top: 2, left: 3 },
+      { type: BrickTypes.ROCK, top: 2, left: 4 },
+      { type: BrickTypes.DEFAULT, top: 2, left: 5 },
+      { type: BrickTypes.CONCRETE, top: 1, left: 3 },
+      { type: BrickTypes.CONCRETE, top: 3, left: 4 },
     ],
   },
   {

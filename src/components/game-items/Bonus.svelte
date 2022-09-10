@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
   export let left;
   export let top;
-
+  export let size: number = 0;
   export let id;
 
   onMount(() => {
@@ -16,7 +16,7 @@
   });
 </script>
 
-<div class="bonus" style="width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;left:{left}px;top:{top}px;">
+<div class="bonus" style="width:{size}px;height:{size}px;left:{left * size}px;top:{top * size}px;">
   <svg viewBox="0 0 443.3 421.6">
     <style id="style2">
       .red {

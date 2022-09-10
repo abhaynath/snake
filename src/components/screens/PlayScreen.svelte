@@ -314,8 +314,8 @@
   const addBonus = () => {
     const id = getId();
     let obj = { top: 0, left: 0, id: id };
-    obj.top = Math.floor(Math.random() * (GAME_HEIGHT / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
-    obj.left = Math.floor(Math.random() * (GAME_WIDTH / EnumDimensions.BLOCK_SIZE)) * EnumDimensions.BLOCK_SIZE;
+    obj.top = Math.floor(Math.random() * (boxSize / blockSize));
+    obj.left = Math.floor(Math.random() * (boxSize / blockSize));
     bonusList.push(obj);
     bonusList = bonusList;
   };
@@ -327,8 +327,8 @@
     }
   };
 
-  /*   startGame();
-  resetGame(); */
+  startGame();
+  resetGame();
   //  addBonus();
 </script>
 
@@ -342,7 +342,7 @@
     <Snake {direction} {snakeBodies} />
     <Food left={foodLeft} top={foodTop} size={blockSize} />
     {#each bonusList as bonus (bonus.id)}
-      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} on:bonusFinished={onBonusFinished} />
+      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={blockSize} on:bonusFinished={onBonusFinished} />
     {/each}
 
     <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->

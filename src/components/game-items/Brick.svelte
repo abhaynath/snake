@@ -5,7 +5,7 @@
   export let data: BrickData;
 </script>
 
-<div class="brick" style="top:{data.top}px;left:{data.left}px;width:{size}px;height:{size}px;">
+<div class="brick" style="top:{data.top * size}px;left:{data.left * size}px;width:{size}px;height:{size}px;">
   {#if data.type == BrickTypes.DEFAULT}
     <svg viewBox="0 0 563 563">
       <g>
