@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { swipe } from "svelte-gestures";
   import { scoreStore } from "./../../stores/scoreStore";
   import { screenStore } from "../../../src/stores/screenStore";
   import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
@@ -11,12 +12,39 @@
   import MessageBox from "../game-items/MessageBox.svelte";
   import Wall from "../game-items/Wall.svelte";
   import type { BonusItem, SnakeItem } from "../../../src/models/play-screen";
-
+  import { onMount } from "svelte";
+  import { beforeUpdate, afterUpdate } from "svelte";
+  let swipeDirection;
+  let target;
   let isGamePaused = false;
   let isMessageVisible = false;
   let message = EnumMessages.NEXT_LEVEL;
   let isProcessing = false;
+  let w: number;
+  let h: number;
+  let boxSize = 0;
+  let blockSize = 0;
 
+  $: {
+    boxSize = Math.min(w, h);
+    console.log(`--reactive = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
+    if (!isNaN(boxSize)) {
+      blockSize = boxSize / 20;
+    }
+
+    /*  if (!isNaN(boxSize)) {
+      EnumDimensions.BLOCK_SIZE = boxSize / 20;
+    }
+    EnumDimensions.BLOCK_SIZE = boxSize / 20; */
+    // console.log(`boxSize = ${boxSize}`);
+  }
+  onMount(() => {
+    console.log(`--onMount = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
+  });
+  afterUpdate(() => {
+    // EnumDimensions.BLOCK_SIZE = boxSize / 20;
+    console.log(`--afterUpdate = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
+  });
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
 
@@ -46,7 +74,10 @@
 
   const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
   const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
-
+  function handler(event: CustomEvent) {
+    swipeDirection = event.detail.direction;
+    target = event.detail.target;
+  }
   const showMessage = (msg: EnumMessages) => {
     message = msg;
     isMessageVisible = true;
@@ -295,36 +326,58 @@
       bonusList = bonusList;
     }
   };
-  startGame();
-  resetGame();
+
+  /*   startGame();
+  resetGame(); */
   //  addBonus();
 </script>
 
-<main style="width:{EnumDimensions.SCREEN_WIDTH}px;height:{EnumDimensions.SCREEN_HEIGHT}px;background:{Levels[currentScoreInfo.level].bg}">
-  <Wall />
-  <Snake {direction} {snakeBodies} />
-  <Food left={foodLeft} top={foodTop} />
-  {#each bonusList as bonus (bonus.id)}
-    <Bonus id={bonus.id} left={bonus.left} top={bonus.top} on:bonusFinished={onBonusFinished} />
-  {/each}
+<div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
+  <main
+    style="width:{boxSize}px;height:{boxSize}px;background:{Levels[currentScoreInfo.level].bg}"
+    use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
+    on:swipe={handler}
+  >
+    <Wall size={blockSize} />
+    <Snake {direction} {snakeBodies} />
+    <Food left={foodLeft} top={foodTop} size={blockSize} />
+    {#each bonusList as bonus (bonus.id)}
+      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} on:bonusFinished={onBonusFinished} />
+    {/each}
 
-  <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
-  {#if isMessageVisible == true}
-    <MessageBox {message} />
-  {/if}
-</main>
+    <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
+    {#if isMessageVisible == true}
+      <MessageBox {message} />
+    {/if}
+  </main>
+</div>
+
 <div class="score">
   <div>{currentScoreInfo.level} : {currentScoreInfo.score}</div>
   <div>{currentScoreInfo.bonus}</div>
+  <div>{swipeDirection}</div>
 </div>
 
 <svelte:window on:keydown={onKeyDown} />
 
 <style>
+  .wrap {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(158, 158, 158);
+    color: white;
+    user-select: none;
+    overscroll-behavior: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   main {
-    border: solid black 1px;
+    width: 100%;
+    height: 100%;
     position: relative;
-    margin: 0px auto;
+    overscroll-behavior: none;
   }
   .score {
     position: fixed;

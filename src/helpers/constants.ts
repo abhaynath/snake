@@ -5,11 +5,11 @@ export enum Directions {
   DOWN = "down",
   UNKNOWN = "",
 }
-export enum EnumDimensions {
-  SCREEN_WIDTH = 600,
-  SCREEN_HEIGHT = 400,
-  BLOCK_SIZE = 50,
-}
+export const EnumDimensions = {
+  SCREEN_WIDTH: 600,
+  SCREEN_HEIGHT: 400,
+  BLOCK_SIZE: 50,
+};
 export enum Config {
   DELAY = 50,
   MAX_POINTS = 10,

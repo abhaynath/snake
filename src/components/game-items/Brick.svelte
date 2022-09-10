@@ -1,10 +1,11 @@
 <script lang="ts">
   import { BrickTypes, type BrickData } from "./../../models/level";
   import { EnumDimensions } from "../../helpers/constants";
+  export let size: number = 0;
   export let data: BrickData;
 </script>
 
-<div class="brick" style="top:{data.top}px;left:{data.left}px;width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;">
+<div class="brick" style="top:{data.top}px;left:{data.left}px;width:{size}px;height:{size}px;">
   {#if data.type == BrickTypes.DEFAULT}
     <svg viewBox="0 0 563 563">
       <g>

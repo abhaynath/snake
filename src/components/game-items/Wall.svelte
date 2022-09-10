@@ -3,7 +3,7 @@
   import { Levels } from "../../../src/models/level";
   import { scoreStore } from "./../../stores/scoreStore";
   import Brick from "./Brick.svelte";
-
+  export let size: number = 0;
   let currentScoreInfo: ScoreInfo;
 
   scoreStore.subscribe((val: ScoreInfo) => {
@@ -13,5 +13,5 @@
 </script>
 
 {#each bricks as brick}
-  <Brick data={brick} />
+  <Brick data={brick} size={size} />
 {/each}
