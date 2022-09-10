@@ -159,8 +159,8 @@
     intervalId = setInterval(() => {
       isProcessing = true;
       if (isGameOver()) {
-        /*  isProcessing = false;
-        gameOver(); */
+         isProcessing = false;
+        gameOver();
       }
       checkBoundaries();
 
@@ -333,13 +333,14 @@
 </script>
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
+  <div>Score</div>
   <main
     style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level].bg}"
     use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
-    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w} maxHeight={h} />
+    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w}  />
     <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
     {#each bonusList as bonus (bonus.id)}
       <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
@@ -350,6 +351,7 @@
       <MessageBox {message} />
     {/if}
   </main>
+  <div><span>Pause</span></div>
 </div>
 
 <!-- <div class="score">
