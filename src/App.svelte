@@ -16,9 +16,9 @@
 
 <style>
   .container {
-    margin: 10px;
+  /*   margin: 10px;
     background-color: black;
-    color: white;
+    color: white; */
     /*   width:600px;
     height:400px; */
     display: flex;

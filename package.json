@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "deploy":"npx gh-pages -d dist",
+    "deploy": "npx gh-pages -d dist",
     "docs": "typedoc --entryPointStrategy expand ./src"
   },
   "devDependencies": {
@@ -23,5 +23,8 @@
     "typedoc": "^0.23.11",
     "typescript": "^4.6.4",
     "vite": "^3.0.7"
+  },
+  "dependencies": {
+    "svelte-gestures": "^1.4.1"
   }
 }
