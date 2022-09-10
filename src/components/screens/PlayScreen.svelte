@@ -22,28 +22,29 @@
   let isProcessing = false;
   let w: number;
   let h: number;
-  let boxSize = 0;
-  let blockSize = 0;
+  let CANVAS_SIZE = 0;
+  let BLOCK_SIZE = 0;
 
   $: {
-    boxSize = Math.min(w, h);
-    console.log(`--reactive = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
-    if (!isNaN(boxSize)) {
-      blockSize = boxSize / 20;
+    CANVAS_SIZE = Math.min(w, h);
+    CANVAS_SIZE = CANVAS_SIZE - 50;
+    console.log(`--reactive = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
+    if (!isNaN(CANVAS_SIZE)) {
+      BLOCK_SIZE = CANVAS_SIZE / 20;
     }
 
     /*  if (!isNaN(boxSize)) {
-      EnumDimensions.BLOCK_SIZE = boxSize / 20;
+      BLOCK_SIZE = boxSize / 20;
     }
-    EnumDimensions.BLOCK_SIZE = boxSize / 20; */
+    BLOCK_SIZE = boxSize / 20; */
     // console.log(`boxSize = ${boxSize}`);
   }
   onMount(() => {
-    console.log(`--onMount = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
+    console.log(`--onMount = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
   });
   afterUpdate(() => {
-    // EnumDimensions.BLOCK_SIZE = boxSize / 20;
-    console.log(`--afterUpdate = ${EnumDimensions.BLOCK_SIZE} ${boxSize}`);
+    // BLOCK_SIZE = boxSize / 20;
+    // console.log(`--afterUpdate = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
   });
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
@@ -72,8 +73,8 @@
   let bonusList: BonusItem[] = [];
   let intervalId: string | number | NodeJS.Timeout;
 
-  const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
-  const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT;
+  /* const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
+  const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT; */
   function handler(event: CustomEvent) {
     swipeDirection = event.detail.direction;
     target = event.detail.target;
@@ -128,13 +129,13 @@
     let { left, top } = snakeBodies[0];
 
     if (direction === Directions.UP) {
-      top -= EnumDimensions.BLOCK_SIZE;
+      top -= 1;
     } else if (direction === Directions.DOWN) {
-      top += EnumDimensions.BLOCK_SIZE;
+      top += 1;
     } else if (direction === Directions.LEFT) {
-      left -= EnumDimensions.BLOCK_SIZE;
+      left -= 1;
     } else if (direction === Directions.RIGHT) {
-      left += EnumDimensions.BLOCK_SIZE;
+      left += 1;
     }
 
     const newHead: SnakeItem = { left, top };
@@ -158,8 +159,8 @@
     intervalId = setInterval(() => {
       isProcessing = true;
       if (isGameOver()) {
-        isProcessing = false;
-        gameOver();
+        /*  isProcessing = false;
+        gameOver(); */
       }
       checkBoundaries();
 
@@ -173,7 +174,7 @@
       checkFoodEaten(newHead);
       checkNextLevel();
       isProcessing = false;
-    }, delay);
+    }, Config.DELAY);
   };
 
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
@@ -184,13 +185,11 @@
     let top = 0,
       left = 0;
     let foodLoc = { top, left };
-    const MAX_ROW = Math.floor(GAME_HEIGHT / EnumDimensions.BLOCK_SIZE);
-    const MAX_COLUMN = Math.floor(GAME_WIDTH / EnumDimensions.BLOCK_SIZE);
-    console.log(MAX_COLUMN, MAX_ROW);
+
     let isFound = true;
 
-    top = Math.floor(Math.random() * MAX_ROW) * EnumDimensions.BLOCK_SIZE;
-    left = Math.floor(Math.random() * MAX_COLUMN) * EnumDimensions.BLOCK_SIZE;
+    top = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
+    left = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
     foodLoc = { top, left };
     console.log("162", foodLoc);
 
@@ -199,10 +198,9 @@
       arr3.push(d);
     });
 
-    console.log(arr3);
     /*  while (isFound) {
-      top = Math.floor(Math.random() * MAX_COLUMN) * EnumDimensions.BLOCK_SIZE;
-      left = Math.floor(Math.random() * MAX_ROW) * EnumDimensions.BLOCK_SIZE;
+      top = Math.floor(Math.random() * MAX_COLUMN) * BLOCK_SIZE;
+      left = Math.floor(Math.random() * MAX_ROW) * BLOCK_SIZE;
       console.log(top, left);
 
       foodLoc = { top, left };
@@ -229,11 +227,11 @@
     direction = Directions.RIGHT;
     snakeBodies = [
       {
-        left: EnumDimensions.BLOCK_SIZE * 2,
+        left: 2,
         top: 0,
       },
       {
-        left: EnumDimensions.BLOCK_SIZE,
+        left: 1,
         top: 0,
       },
       {
@@ -245,19 +243,21 @@
 
   const checkBoundaries = () => {
     const { top, left } = snakeBodies[0];
-    const right = left + EnumDimensions.BLOCK_SIZE;
-    const bottom = top + EnumDimensions.BLOCK_SIZE;
-    if (left >= GAME_WIDTH && direction == Directions.RIGHT) {
-      snakeBodies[0].left = -2 * EnumDimensions.BLOCK_SIZE;
+    const right = left + 1;
+    const bottom = top + 1;
+    const MAX_ROW = Math.floor(CANVAS_SIZE / BLOCK_SIZE);
+
+    if (left >= MAX_ROW && direction == Directions.RIGHT) {
+      snakeBodies[0].left = -2;
     }
     if (left < 0 && direction == Directions.LEFT) {
-      snakeBodies[0].left = GAME_WIDTH + EnumDimensions.BLOCK_SIZE;
+      snakeBodies[0].left = MAX_ROW + 1;
     }
     if (top < 0 && direction == Directions.UP) {
-      snakeBodies[0].top = GAME_HEIGHT + EnumDimensions.BLOCK_SIZE;
+      snakeBodies[0].top = MAX_ROW + 1;
     }
-    if (top >= GAME_HEIGHT && direction == Directions.DOWN) {
-      snakeBodies[0].top = -2 * EnumDimensions.BLOCK_SIZE;
+    if (top >= MAX_ROW && direction == Directions.DOWN) {
+      snakeBodies[0].top = -2;
     }
   };
   const isGameOver = () => {
@@ -314,8 +314,8 @@
   const addBonus = () => {
     const id = getId();
     let obj = { top: 0, left: 0, id: id };
-    obj.top = Math.floor(Math.random() * (boxSize / blockSize));
-    obj.left = Math.floor(Math.random() * (boxSize / blockSize));
+    obj.top = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
+    obj.left = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
     bonusList.push(obj);
     bonusList = bonusList;
   };
@@ -334,15 +334,15 @@
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
   <main
-    style="width:{boxSize}px;height:{boxSize}px;background:{Levels[currentScoreInfo.level].bg}"
+    style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level].bg}"
     use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
     on:swipe={handler}
   >
-    <Wall size={blockSize} />
-    <Snake {direction} {snakeBodies} />
-    <Food left={foodLeft} top={foodTop} size={blockSize} />
+    <Wall size={BLOCK_SIZE} />
+    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w} maxHeight={h} />
+    <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
     {#each bonusList as bonus (bonus.id)}
-      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={blockSize} on:bonusFinished={onBonusFinished} />
+      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
     {/each}
 
     <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->
@@ -352,12 +352,12 @@
   </main>
 </div>
 
-<div class="score">
+<!-- <div class="score">
   <div>{currentScoreInfo.level} : {currentScoreInfo.score}</div>
   <div>{currentScoreInfo.bonus}</div>
   <div>{swipeDirection}</div>
 </div>
-
+ -->
 <svelte:window on:keydown={onKeyDown} />
 
 <style>

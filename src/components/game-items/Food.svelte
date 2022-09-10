@@ -6,7 +6,7 @@
   export let size: number = 0;
 </script>
 
-<div class="food" style="left: {left}px; top: {top}px;width:{size - 2}px;height:{size - 2}px;">
+<div class="food" style="left: {left * size}px; top: {top * size}px;width:{size - 2}px;height:{size - 2}px;">
   <svg viewBox="0 0 855.6 798.6">
     <g id="Layer_1" />
     <g id="Layer_2">

@@ -1,15 +1,17 @@
 <script lang="ts">
   import { EnumDimensions } from "../../helpers/constants";
-
+  export let size = 0;
   export let top = EnumDimensions.BLOCK_SIZE;
   export let left = EnumDimensions.BLOCK_SIZE;
   export let isHead = false;
   export let isTail = false;
   export let direction = "right";
+  export let maxWidth = 0;
+  export let maxHeight = 0;
 </script>
 
-{#if top >= 0 && top < EnumDimensions.SCREEN_HEIGHT && left >= 0 && left < EnumDimensions.SCREEN_WIDTH}
-  <div style="left: {left}px; top: {top}px;width:{EnumDimensions.BLOCK_SIZE}px;height:{EnumDimensions.BLOCK_SIZE}px;" class="snake-body">
+<!-- {#if top >= 0 && top < maxHeight && left >= 0 && left < maxWidth} -->
+  <div style="left: {left * size}px; top: {top * size}px;width:{size}px;height:{size}px;" class="snake-body">
     {#if isHead}
       <svg viewBox="0 0 258 258" class={direction}>
         <g>
@@ -33,7 +35,7 @@
       </svg>
     {/if}
   </div>
-{/if}
+<!-- {/if} -->
 
 <style>
   .snake-body {
