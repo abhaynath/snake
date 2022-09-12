@@ -16,7 +16,7 @@
   });
 </script>
 
-<div class="bonus" style="width:{size}px;height:{size}px;left:{left * size}px;top:{top * size}px;">
+<div class="bonus  bounce-top" style="width:{size}px;height:{size}px;left:{left * size}px;top:{top * size}px;">
   <svg viewBox="0 0 443.3 421.6">
     <style id="style2">
       .red {
