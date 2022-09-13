@@ -28,18 +28,10 @@
   $: {
     CANVAS_SIZE = Math.min(w, h);
     CANVAS_SIZE = CANVAS_SIZE - 50;
-    CANVAS_SIZE = Math.min(CANVAS_SIZE,500);
-    console.log(`--reactive = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
+    CANVAS_SIZE = Math.min(CANVAS_SIZE, 500);
     if (!isNaN(CANVAS_SIZE)) {
-      BLOCK_SIZE = CANVAS_SIZE / 20;
-     
+      BLOCK_SIZE = Math.floor(CANVAS_SIZE / Config.MAX_BLOCKS);
     }
-
-    /*  if (!isNaN(boxSize)) {
-      BLOCK_SIZE = boxSize / 20;
-    }
-    BLOCK_SIZE = boxSize / 20; */
-    // console.log(`boxSize = ${boxSize}`);
   }
   onMount(() => {
     console.log(`--onMount = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
@@ -75,8 +67,6 @@
   let bonusList: BonusItem[] = [];
   let intervalId: string | number | NodeJS.Timeout;
 
-  /* const GAME_WIDTH = EnumDimensions.SCREEN_WIDTH;
-  const GAME_HEIGHT = EnumDimensions.SCREEN_HEIGHT; */
   function handler(event: CustomEvent) {
     swipeDirection = event.detail.direction;
     target = event.detail.target;
@@ -190,8 +180,8 @@
 
     let isFound = true;
 
-    top = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
-    left = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
+    top = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    left = Math.floor(Math.random() * Config.MAX_BLOCKS);
     foodLoc = { top, left };
     console.log("162", foodLoc);
 
@@ -247,18 +237,16 @@
     const { top, left } = snakeBodies[0];
     const right = left + 1;
     const bottom = top + 1;
-    const MAX_ROW = Math.floor(CANVAS_SIZE / BLOCK_SIZE);
-
-    if (left >= MAX_ROW && direction == Directions.RIGHT) {
+    if (left >= Config.MAX_BLOCKS && direction == Directions.RIGHT) {
       snakeBodies[0].left = -2;
     }
     if (left < 0 && direction == Directions.LEFT) {
-      snakeBodies[0].left = MAX_ROW + 1;
+      snakeBodies[0].left = Config.MAX_BLOCKS + 1;
     }
     if (top < 0 && direction == Directions.UP) {
-      snakeBodies[0].top = MAX_ROW + 1;
+      snakeBodies[0].top = Config.MAX_BLOCKS + 1;
     }
-    if (top >= MAX_ROW && direction == Directions.DOWN) {
+    if (top >= Config.MAX_BLOCKS && direction == Directions.DOWN) {
       snakeBodies[0].top = -2;
     }
   };
@@ -316,8 +304,8 @@
   const addBonus = () => {
     const id = getId();
     let obj = { top: 0, left: 0, id: id };
-    obj.top = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
-    obj.left = Math.floor(Math.random() * (CANVAS_SIZE / BLOCK_SIZE));
+    obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
     bonusList.push(obj);
     bonusList = bonusList;
   };
@@ -382,13 +370,5 @@
     height: 100%;
     position: relative;
     overscroll-behavior: none;
-  }
-  .score {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    text-align: center;
-    font-weight: bold;
-    color: rebeccapurple;
   }
 </style>

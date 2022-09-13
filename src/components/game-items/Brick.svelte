@@ -7,43 +7,7 @@
 
 <div class="brick" style="top:{data.top * size}px;left:{data.left * size}px;width:{size}px;height:{size}px;">
   {#if data.type == BrickTypes.DEFAULT}
-   <!--  <svg viewBox="0 0 563 563">
-      <g>
-        <linearGradient id="brick_SVGID_1_" gradientUnits="userSpaceOnUse" x1="4" y1="96.5" x2="281" y2="96.5">
-          <stop offset="0" style="stop-color:#9E2000" />
-          <stop offset="1" style="stop-color:#F15A24" />
-        </linearGradient>
-        <rect x="4" y="4" fill="url(#brick_SVGID_1_)" stroke="#000000" stroke-width="8" stroke-miterlimit="10" width="277" height="185" />
-        <linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="420" y1="189" x2="420" y2="4">
-          <stop offset="0" style="stop-color:#9E2000" />
-          <stop offset="1" style="stop-color:#F15A24" />
-        </linearGradient>
-        <rect x="281" y="4" fill="url(#SVGID_2_)" stroke="#000000" stroke-width="8" stroke-miterlimit="10" width="278" height="185" />
-        <linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="281.5" y1="374" x2="281.5" y2="189.0005">
-          <stop offset="0" style="stop-color:#9E2000" />
-          <stop offset="1" style="stop-color:#F15A24" />
-        </linearGradient>
-        <polygon
-          fill="url(#SVGID_3_)"
-          stroke="#000000"
-          stroke-width="8"
-          stroke-miterlimit="10"
-          points="281,189 4,189 4,374 281,374 
-            559,374 559,189 	"
-        />
-        <linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="4" y1="466.5" x2="281" y2="466.5">
-          <stop offset="0" style="stop-color:#9E2000" />
-          <stop offset="1" style="stop-color:#F15A24" />
-        </linearGradient>
-        <rect x="4" y="374" fill="url(#SVGID_4_)" stroke="#000000" stroke-width="8" stroke-miterlimit="10" width="277" height="185" />
-        <linearGradient id="SVGID_5_" gradientUnits="userSpaceOnUse" x1="281" y1="466.5" x2="559" y2="466.5">
-          <stop offset="0" style="stop-color:#9E2000" />
-          <stop offset="1" style="stop-color:#F15A24" />
-        </linearGradient>
-        <rect x="281" y="374" fill="url(#SVGID_5_)" stroke="#000000" stroke-width="8" stroke-miterlimit="10" width="278" height="185" />
-      </g>
-    </svg> -->
-    <svg viewBox="0 0 54 58">
+     <svg viewBox="0 0 54 58">
     <symbol id="brick1" viewBox="-27 -29 54 58">
         <polygon points="27,-29 -27,-29 -27,29 27,29 	" />
         <polygon fill="#BF6411" points="-15,29 -27,29 -27,16 -15,16 -2,16 -2,29 	" />

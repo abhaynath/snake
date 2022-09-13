@@ -15,6 +15,7 @@ export enum Config {
   MAX_POINTS = 6,
   BONUS_TIME = 5000,
   MESSAGE_TIME = 3000,
+  MAX_BLOCKS = 20,
 }
 export enum KeyMap {
   UP = "ArrowUp",
