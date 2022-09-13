@@ -183,7 +183,6 @@
     top = Math.floor(Math.random() * Config.MAX_BLOCKS);
     left = Math.floor(Math.random() * Config.MAX_BLOCKS);
     foodLoc = { top, left };
-    
 
     const arr3 = [];
     snakeBodies.forEach((d) => {
@@ -276,6 +275,20 @@
     return Directions.UNKNOWN;
   };
 
+  const getOppositeDirection = (dir: Directions) => {
+    switch (dir) {
+      case Directions.DOWN:
+        return Directions.UP;
+      case Directions.UP:
+        return Directions.DOWN;
+      case Directions.LEFT:
+        return Directions.RIGHT;
+      case Directions.RIGHT:
+        return Directions.LEFT;
+      case Directions.UNKNOWN:
+        return Directions.UNKNOWN;
+    }
+  };
   const onKeyDown = (e: KeyboardEvent) => {
     if (isProcessing) {
       return;
@@ -293,7 +306,7 @@
       return;
     }
     const newDirection = getDirectionFromKeyCode(keyCode);
-    if (newDirection != Directions.UNKNOWN) {
+    if (newDirection != Directions.UNKNOWN && newDirection != getOppositeDirection(newDirection)) {
       direction = newDirection;
     }
   };
