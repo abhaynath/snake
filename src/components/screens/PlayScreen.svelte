@@ -183,7 +183,7 @@
     top = Math.floor(Math.random() * Config.MAX_BLOCKS);
     left = Math.floor(Math.random() * Config.MAX_BLOCKS);
     foodLoc = { top, left };
-    console.log("162", foodLoc);
+    
 
     const arr3 = [];
     snakeBodies.forEach((d) => {

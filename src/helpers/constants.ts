@@ -11,8 +11,8 @@ export const EnumDimensions = {
   BLOCK_SIZE: 50,
 };
 export enum Config {
-  DELAY = 1000,
-  MAX_POINTS = 6,
+  DELAY = 100,
+  MAX_POINTS = 50,
   BONUS_TIME = 5000,
   MESSAGE_TIME = 3000,
   MAX_BLOCKS = 20,
