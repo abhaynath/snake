@@ -7,7 +7,7 @@
 
 <div class="brick" style="top:{data.top * size}px;left:{data.left * size}px;width:{size}px;height:{size}px;">
   {#if data.type == BrickTypes.DEFAULT}
-    <svg viewBox="0 0 563 563">
+   <!--  <svg viewBox="0 0 563 563">
       <g>
         <linearGradient id="brick_SVGID_1_" gradientUnits="userSpaceOnUse" x1="4" y1="96.5" x2="281" y2="96.5">
           <stop offset="0" style="stop-color:#9E2000" />
@@ -42,7 +42,25 @@
         </linearGradient>
         <rect x="281" y="374" fill="url(#SVGID_5_)" stroke="#000000" stroke-width="8" stroke-miterlimit="10" width="278" height="185" />
       </g>
-    </svg>
+    </svg> -->
+    <svg viewBox="0 0 54 58">
+    <symbol id="brick1" viewBox="-27 -29 54 58">
+        <polygon points="27,-29 -27,-29 -27,29 27,29 	" />
+        <polygon fill="#BF6411" points="-15,29 -27,29 -27,16 -15,16 -2,16 -2,29 	" />
+        <polygon fill="#BF6411" points="12,29 0,29 0,16 12,16 25,16 25,29 	" />
+        <polygon fill="#BF6411" points="-27,14 -15,14 -15,2 -27,2 	" />
+        <polygon fill="#BF6411" points="0,14 -13,14 -13,2 0,2 12,2 12,14 	" />
+        <polygon fill="#BF6411" points="14,14 27,14 27,2 14,2 	" />
+        <polygon fill="#BF6411" points="-15,0 -27,0 -27,-13 -15,-13 -2,-13 -2,0 	" />
+        <polygon fill="#BF6411" points="12,0 0,0 0,-13 12,-13 25,-13 25,0 	" />
+        <polygon fill="#BF6411" points="-27,-15 -15,-15 -15,-27 -27,-27 	" />
+        <polygon fill="#BF6411" points="0,-15 -13,-15 -13,-27 0,-27 12,-27 12,-15 	" />
+        <polygon fill="#BF6411" points="14,-15 27,-15 27,-27 14,-27 	" />
+        <polygon display="none" fill="none" points="-27,29 27,29 27,-29 -27,-29 	" />
+    </symbol>
+    <use xlink:href="#brick1" width="54" height="58" x="-27" y="-29" transform="matrix(1 0 0 -1 27 29)"
+        overflow="visible" />
+</svg>
   {:else if data.type == BrickTypes.CONCRETE}
     <svg viewBox="0 0 563 563">
       <g>

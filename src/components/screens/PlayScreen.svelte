@@ -3,7 +3,7 @@
   import { scoreStore } from "./../../stores/scoreStore";
   import { screenStore } from "../../../src/stores/screenStore";
   import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
-  import { Directions, EnumDimensions, Config, KeyMap, EnumMessages } from "../../../src/helpers/constants";
+  import { Directions, Config, KeyMap, EnumMessages } from "../../../src/helpers/constants";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
   import { Levels } from "../../../src/models/level";
@@ -13,7 +13,7 @@
   import Wall from "../game-items/Wall.svelte";
   import type { BonusItem, SnakeItem } from "../../../src/models/play-screen";
   import { onMount } from "svelte";
-  import { beforeUpdate, afterUpdate } from "svelte";
+  import { afterUpdate } from "svelte";
   let swipeDirection;
   let target;
   let isGamePaused = false;
@@ -28,9 +28,11 @@
   $: {
     CANVAS_SIZE = Math.min(w, h);
     CANVAS_SIZE = CANVAS_SIZE - 50;
+    CANVAS_SIZE = Math.min(CANVAS_SIZE,500);
     console.log(`--reactive = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
     if (!isNaN(CANVAS_SIZE)) {
       BLOCK_SIZE = CANVAS_SIZE / 20;
+     
     }
 
     /*  if (!isNaN(boxSize)) {
@@ -159,7 +161,7 @@
     intervalId = setInterval(() => {
       isProcessing = true;
       if (isGameOver()) {
-         isProcessing = false;
+        isProcessing = false;
         gameOver();
       }
       checkBoundaries();
@@ -340,7 +342,7 @@
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
-    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w}  />
+    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w} />
     <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
     {#each bonusList as bonus (bonus.id)}
       <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
