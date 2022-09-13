@@ -9,15 +9,19 @@
   export let isHead = false;
   export let isTail = false;
   export let direction = "right";
-  export let maxWidth = 0;
 
-  const MAX_ROW = Math.floor(maxWidth / size);
   const getDirection = () => {
     if (isHead) return direction;
-    if (current.left == prev.left && current.top > prev.top) return "top";
+    if (current.left == prev.left && current.top > prev.top) return "up";
     if (current.left == prev.left && current.top < prev.top) return "down";
     if (current.top == prev.top && current.left > prev.left) return "right";
     if (current.top == prev.top && current.left < prev.left) return "left";
+  };
+  const getOpposite = (dir: string) => {
+    if (dir == "up") return "down";
+    if (dir == "down") return "up";
+    if (dir == "right") return "left";
+    if (dir == "left") return "right";
   };
 </script>
 
@@ -37,12 +41,12 @@
       </g>
     </svg>
   {:else if isTail}
-    <svg viewBox="0 0 258 258" class={getDirection()}>
-      <polygon fill="#0037FF" points="258,179 0,128 0,128 258,77 " />
+    <svg viewBox="0 0 50 50" class={direction}>
+      <rect y="0" fill="#0037FF" width="50" height="50" />
     </svg>
   {:else}
-    <svg viewBox="0 0 258 258" class={getDirection()}>
-      <rect y="77" fill="#0037FF" width="258" height="102" />
+    <svg viewBox="0 0 50 50" class={direction}>
+      <rect y="0" fill="#0037FF" width="50" height="50" />
     </svg>
   {/if}
 </div>
@@ -63,8 +67,10 @@
   }
   .up {
     transform: rotate(270deg);
+    /* background-color: red; */
   }
   .down {
     transform: rotate(90deg);
+    /* background-color: green; */
   }
 </style>

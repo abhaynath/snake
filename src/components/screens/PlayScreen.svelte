@@ -330,7 +330,7 @@
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
-    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} maxWidth={w} />
+    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} />
     <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
     {#each bonusList as bonus (bonus.id)}
       <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
