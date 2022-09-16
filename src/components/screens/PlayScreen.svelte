@@ -1,17 +1,17 @@
 <script lang="ts">
   import { swipe } from "svelte-gestures";
-  import { scoreStore } from "./../../stores/scoreStore";
-  import { screenStore } from "../../../src/stores/screenStore";
-  import type { ScoreInfo, ScreenStatus } from "../../../src/models/gameState";
-  import { Directions, Config, KeyMap, EnumMessages } from "../../../src/helpers/constants";
-  import Food from "../game-items/Food.svelte";
-  import Snake from "../game-items/Snake.svelte";
-  import { Levels } from "../../../src/models/level";
-  import Bonus from "../game-items/Bonus.svelte";
-  import { getId } from "../../../src/helpers/common";
-  import MessageBox from "../game-items/MessageBox.svelte";
-  import Wall from "../game-items/Wall.svelte";
-  import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "../../../src/models/play-screen";
+  import { scoreStore } from "$stores/scoreStore";
+  import { screenStore } from "$stores/screenStore";
+  import type { ScoreInfo, ScreenStatus } from "$models/gameState";
+  import { Directions, Config, KeyMap, EnumMessages } from "$helpers/constants";
+  import Food from "$gameItems/Food.svelte";
+  import Snake from "$gameItems/Snake.svelte";
+  import { Levels } from "$models/level";
+  import Bonus from "$gameItems/Bonus.svelte";
+  import { getId } from "$helpers/common";
+  import MessageBox from "$gameItems/MessageBox.svelte";
+  import Wall from "$gameItems/Wall.svelte";
+  import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "$models/play-screen";
   import { onMount } from "svelte";
 
   import { PlayStatusStore, type PlayStatus } from "../../../src/stores/playStatusStore";
@@ -230,7 +230,6 @@
         top: 0,
       },
     ];
-   
   };
 
   const checkBoundaries = () => {

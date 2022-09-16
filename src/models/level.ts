@@ -1,4 +1,4 @@
-import { EnumDimensions } from "../../src/helpers/constants";
+
 
 export interface Level {
   bg: string;

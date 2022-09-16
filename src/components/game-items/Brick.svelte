@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { BrickTypes, type BrickData } from "./../../models/level";
-  import { EnumDimensions } from "../../helpers/constants";
+  import { BrickTypes, type BrickData } from "$models/level";
+  
   export let size: number = 0;
   export let data: BrickData;
 </script>

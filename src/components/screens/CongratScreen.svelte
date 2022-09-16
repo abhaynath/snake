@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { screenStore } from "../../../src/stores/screenStore";
+  import { screenStore } from "$stores/screenStore";
   const restartGame = () => {
     console.log("restart game");
     screenStore.welcomeScreen();

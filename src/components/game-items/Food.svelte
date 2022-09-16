@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { FoodItem } from "./../../models/play-screen";
-  import { EnumDimensions } from "../../../src/helpers/constants";
+  import type { FoodItem } from "$models/play-screen";
+  
 
   /*   export let top: number = 0;
   export let left: number = 0; */

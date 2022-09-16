@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { screenStore } from "../../../src/stores/screenStore";
-  import { scoreStore } from "./../../stores/scoreStore";
-  import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
-  import Food from "../game-items/Food.svelte";
-  import Bonus from "../game-items/Bonus.svelte";
+  import { screenStore } from "$stores/screenStore";
+  import { scoreStore } from "$stores/scoreStore";
+  import type { ScoreInfo } from "$models/gameState";
+
   const restartGame = () => {
     console.log("restart game");
     screenStore.welcomeScreen();

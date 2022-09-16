@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { BonusItem } from "./../../models/play-screen";
-  import { Config, EnumDimensions } from "../../../src/helpers/constants";
+  import type { BonusItem } from "$models/play-screen";
+  import { Config, EnumDimensions } from "$helpers/constants";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();

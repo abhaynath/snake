@@ -1,8 +1,8 @@
-import GameOverScreen from "../../src/components/screens/GameOverScreen.svelte";
-import PlayScreen from "../../src/components/screens/PlayScreen.svelte";
-import StartScreen from "../../src/components/screens/StartScreen.svelte";
-import CongratScreen from "../../src/components/screens/CongratScreen.svelte";
-import { GameStatus, type ScreenStatus } from "../../src/models/gameState";
+import GameOverScreen from "$screens/GameOverScreen.svelte";
+import PlayScreen from "$screens/PlayScreen.svelte";
+import StartScreen from "$screens/StartScreen.svelte";
+import CongratScreen from "$screens/CongratScreen.svelte";
+import { GameStatus, type ScreenStatus } from "$models/gameState";
 
 import { writable } from "svelte/store";
 

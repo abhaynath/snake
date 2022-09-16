@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { ScoreInfo } from "../../src/models/gameState";
+import type { ScoreInfo } from "$models/gameState";
 
 export enum ScoreValues {
   FOOD = 5,

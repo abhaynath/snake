@@ -1,5 +1,5 @@
 <script type="ts">
-  import { screenStore } from "../../../src/stores/screenStore";
+  import { screenStore } from "$stores/screenStore";
 
   const startGame = () => {
     console.log("start game");

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import type { SnakeItem } from "src/models/play-screen";
+  import type { SnakeItem } from "$models/play-screen";
 
-  import { EnumDimensions } from "../../helpers/constants";
   export let size = 0;
   export let current: SnakeItem = null;
   export let prev: SnakeItem = null;

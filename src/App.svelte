@@ -1,7 +1,7 @@
 <script lang="ts">
   import { EnumDimensions } from "./helpers/constants";
-  import type { ScreenStatus } from "./models/gameState";
-  import { screenStore } from "./stores/screenStore";
+  import type { ScreenStatus } from "$models/gameState";
+  import { screenStore } from "$stores/screenStore";
 
   let currenScreen: ScreenStatus;
   screenStore.subscribe((val: ScreenStatus) => {

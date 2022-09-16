@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SnakeItem } from "src/models/play-screen";
+  import type { SnakeItem } from "$models/play-screen";
 
   import SnakeBody from "./SnakeBody.svelte";
   export let snakeBodies: SnakeItem[] = [];
