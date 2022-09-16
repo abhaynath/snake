@@ -11,9 +11,9 @@
   import { getId } from "../../../src/helpers/common";
   import MessageBox from "../game-items/MessageBox.svelte";
   import Wall from "../game-items/Wall.svelte";
-  import type { BonusItem, SnakeItem } from "../../../src/models/play-screen";
+  import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "../../../src/models/play-screen";
   import { onMount } from "svelte";
-  import { afterUpdate } from "svelte";
+
   import { PlayStatusStore, type PlayStatus } from "../../../src/stores/playStatusStore";
   let swipeDirection;
   let target;
@@ -37,10 +37,7 @@
   onMount(() => {
     console.log(`--onMount = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
   });
-  afterUpdate(() => {
-    // BLOCK_SIZE = boxSize / 20;
-    // console.log(`--afterUpdate = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
-  });
+
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
   let playStatus: PlayStatus;
@@ -65,11 +62,9 @@
     }, Config.MESSAGE_TIME);
   };
 
-  let foodLeft = 0;
-  let foodTop = 0;
   let direction = Directions.RIGHT;
   let snakeBodies: SnakeItem[] = [];
-  // let bonusList: BonusItem[] = [];
+
   let intervalId: string | number | NodeJS.Timeout;
 
   function handler(event: CustomEvent) {
@@ -140,18 +135,23 @@
   };
 
   const checkFoodEaten = (head: SnakeItem) => {
-    if (isCollide(head, { left: foodLeft, top: foodTop })) {
-      snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
-      scoreStore.eatFood();
-      moveFood();
-      if (currentScoreInfo.food % 5 == 0) {
-        addBonus();
+    if (playStatus.foods.length > 0) {
+      if (isCollide(head, playStatus.foods[0])) {
+        snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
+        scoreStore.eatFood();
+        PlayStatusStore.removeFood(playStatus.foods[0].id);
+        addFood();
+        //moveFood();
+        if (currentScoreInfo.food % 5 == 0) {
+          addBonus();
+        }
       }
     }
   };
   const startGame = () => {
     let delay = Levels.length - currentScoreInfo.level;
     delay = delay * Config.DELAY;
+    addFood();
 
     intervalId = setInterval(() => {
       isProcessing = true;
@@ -212,14 +212,8 @@
     } */
     return foodLoc;
   };
-  const moveFood = () => {
-    const { top, left } = getNewFoodLocation();
-    foodLeft = left;
-    foodTop = top;
-  };
 
   const resetGame = () => {
-    moveFood();
     direction = Directions.RIGHT;
     snakeBodies = [
       {
@@ -319,26 +313,23 @@
   const onBonusFinished = (e: any) => {
     PlayStatusStore.removeBonus(e.detail);
   };
+  const addFood = () => {
+    const id = getId();
+    let obj: FoodItem = { top: 0, left: 0, id: id, type: FoodTypes.DEFAULT };
+    obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    PlayStatusStore.addFood(obj);
+  };
   const addBonus = () => {
     const id = getId();
-    let obj = { top: 0, left: 0, id: id };
+    let obj: BonusItem = { top: 0, left: 0, id: id };
     obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
     obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
     PlayStatusStore.addBonus(obj);
-    /*   bonusList.push(obj);
-    bonusList = bonusList; */
   };
-  /*   const removeBonus = (id: string) => {
-    const index = bonusList.findIndex((d) => d.id == id);
-    if (index != -1) {
-      bonusList.splice(index, 1);
-      bonusList = bonusList;
-    }
-  }; */
 
   startGame();
   resetGame();
-  //  addBonus();
 </script>
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
@@ -350,9 +341,12 @@
   >
     <Wall size={BLOCK_SIZE} />
     <Snake {direction} {snakeBodies} size={BLOCK_SIZE} />
-    <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
+    {#each playStatus.foods as food (food.id)}
+      <Food data={food} size={BLOCK_SIZE} />
+    {/each}
+    <!-- <Food data={foodData} size={BLOCK_SIZE} /> -->
     {#each playStatus.bonus as bonus (bonus.id)}
-      <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
+      <Bonus data={bonus} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
     {/each}
 
     <!-- <Bonus left={100} top={200} on:bonusFinished={onBonusFinished} /> -->

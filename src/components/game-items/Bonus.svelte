@@ -1,22 +1,22 @@
 <script lang="ts">
+  import type { BonusItem } from "./../../models/play-screen";
   import { Config, EnumDimensions } from "../../../src/helpers/constants";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
   import { onMount } from "svelte";
-  export let left;
-  export let top;
+ 
+  export let data: BonusItem;
   export let size: number = 0;
-  export let id;
 
   onMount(() => {
     const intervalId = setTimeout(() => {
-      dispatch("bonusFinished", id);
+      dispatch("bonusFinished", data.id);
     }, Config.BONUS_TIME);
   });
 </script>
 
-<div class="bonus  bounce-top" style="width:{size}px;height:{size}px;left:{left * size}px;top:{top * size}px;">
+<div class="bonus  bounce-top" style="width:{size}px;height:{size}px;left:{data.left * size}px;top:{data.top * size}px;">
   <svg viewBox="0 0 443.3 421.6">
     <style id="style2">
       .red {

@@ -7,7 +7,7 @@ export enum FoodTypes {
   ROCK,
   CONCRETE,
 }
-export interface FoodData {
+export interface FoodItem {
   id: string;
   left: number;
   top: number;

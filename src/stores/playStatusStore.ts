@@ -1,11 +1,12 @@
-import type { BonusItem } from "src/models/play-screen";
+import type { BonusItem, FoodItem } from "src/models/play-screen";
 import { writable } from "svelte/store";
 import { getId } from "../helpers/common";
 export interface PlayStatus {
   bonus: BonusItem[];
+  foods: FoodItem[];
 }
 const getPlayStatusStore = () => {
-  let playStatus: PlayStatus = { bonus: [] };
+  let playStatus: PlayStatus = { bonus: [], foods: [] };
   let { update, subscribe } = writable<PlayStatus>(playStatus);
 
   const addBonus = (item: BonusItem) => {
@@ -32,6 +33,31 @@ const getPlayStatusStore = () => {
       return val;
     });
   };
-  return { subscribe, addBonus, removeBonus };
+
+  const addFood = (item: FoodItem) => {
+    update((val: PlayStatus) => {
+      const index = val.foods.findIndex((p: FoodItem) => p.id == item.id);
+      if (index == -1) {
+        val.foods.push(item);
+        val.foods = val.foods;
+        val = val;
+      }
+      return val;
+    });
+  };
+
+  const removeFood = (id: string) => {
+    update((val: PlayStatus) => {
+      let d = val.foods.slice(0);
+      let index = d.findIndex((p: FoodItem) => p.id == id);
+      if (index != -1) {
+        d.splice(index, 1);
+        val.foods = d;
+        val = val;
+      }
+      return val;
+    });
+  };
+  return { subscribe, addBonus, removeBonus, addFood, removeFood };
 };
 export const PlayStatusStore = getPlayStatusStore();
