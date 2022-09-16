@@ -151,6 +151,7 @@
   const startGame = () => {
     let delay = Levels.length - currentScoreInfo.level;
     delay = delay * Config.DELAY;
+    PlayStatusStore.reset();
     addFood();
 
     intervalId = setInterval(() => {
@@ -229,6 +230,7 @@
         top: 0,
       },
     ];
+   
   };
 
   const checkBoundaries = () => {

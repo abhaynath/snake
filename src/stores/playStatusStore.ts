@@ -58,6 +58,13 @@ const getPlayStatusStore = () => {
       return val;
     });
   };
-  return { subscribe, addBonus, removeBonus, addFood, removeFood };
+
+  const reset = () => {
+    update((val: PlayStatus) => {
+      val = { bonus: [], foods: [] };
+      return val;
+    });
+  };
+  return { subscribe, addBonus, removeBonus, addFood, removeFood, reset };
 };
 export const PlayStatusStore = getPlayStatusStore();
