@@ -2,7 +2,7 @@
   import { swipe } from "svelte-gestures";
   import { scoreStore } from "./../../stores/scoreStore";
   import { screenStore } from "../../../src/stores/screenStore";
-  import type { ScoreInfo, ScreenStatus } from "src/models/gameState";
+  import type { ScoreInfo, ScreenStatus } from "../../../src/models/gameState";
   import { Directions, Config, KeyMap, EnumMessages } from "../../../src/helpers/constants";
   import Food from "../game-items/Food.svelte";
   import Snake from "../game-items/Snake.svelte";
@@ -14,6 +14,7 @@
   import type { BonusItem, SnakeItem } from "../../../src/models/play-screen";
   import { onMount } from "svelte";
   import { afterUpdate } from "svelte";
+  import { PlayStatusStore, type PlayStatus } from "../../../src/stores/playStatusStore";
   let swipeDirection;
   let target;
   let isGamePaused = false;
@@ -42,12 +43,16 @@
   });
   let currentScreen: ScreenStatus;
   let currentScoreInfo: ScoreInfo;
+  let playStatus: PlayStatus;
 
   screenStore.subscribe((val: ScreenStatus) => {
     currentScreen = val;
   });
   scoreStore.subscribe((val: ScoreInfo) => {
     currentScoreInfo = val;
+  });
+  PlayStatusStore.subscribe((val: PlayStatus) => {
+    playStatus = val;
   });
   $: bricks = Levels[currentScoreInfo.level - 1].wall;
   const gameOver = () => {
@@ -64,7 +69,7 @@
   let foodTop = 0;
   let direction = Directions.RIGHT;
   let snakeBodies: SnakeItem[] = [];
-  let bonusList: BonusItem[] = [];
+  // let bonusList: BonusItem[] = [];
   let intervalId: string | number | NodeJS.Timeout;
 
   function handler(event: CustomEvent) {
@@ -100,9 +105,9 @@
     });
   };
   const checkBonusCollision = (head: SnakeItem) => {
-    bonusList.forEach((d: BonusItem) => {
+    playStatus.bonus.forEach((d: BonusItem) => {
       if (isCollide(head, d)) {
-        removeBonus(d.id);
+        PlayStatusStore.removeBonus(d.id);
         scoreStore.getBonus();
       }
     });
@@ -312,23 +317,24 @@
   };
 
   const onBonusFinished = (e: any) => {
-    removeBonus(e.detail);
+    PlayStatusStore.removeBonus(e.detail);
   };
   const addBonus = () => {
     const id = getId();
     let obj = { top: 0, left: 0, id: id };
     obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
     obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
-    bonusList.push(obj);
-    bonusList = bonusList;
+    PlayStatusStore.addBonus(obj);
+    /*   bonusList.push(obj);
+    bonusList = bonusList; */
   };
-  const removeBonus = (id: string) => {
+  /*   const removeBonus = (id: string) => {
     const index = bonusList.findIndex((d) => d.id == id);
     if (index != -1) {
       bonusList.splice(index, 1);
       bonusList = bonusList;
     }
-  };
+  }; */
 
   startGame();
   resetGame();
@@ -345,7 +351,7 @@
     <Wall size={BLOCK_SIZE} />
     <Snake {direction} {snakeBodies} size={BLOCK_SIZE} />
     <Food left={foodLeft} top={foodTop} size={BLOCK_SIZE} />
-    {#each bonusList as bonus (bonus.id)}
+    {#each playStatus.bonus as bonus (bonus.id)}
       <Bonus id={bonus.id} left={bonus.left} top={bonus.top} size={BLOCK_SIZE} on:bonusFinished={onBonusFinished} />
     {/each}
 
