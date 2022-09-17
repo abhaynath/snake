@@ -1,12 +1,33 @@
-import type { BonusItem, FoodItem } from "src/models/play-screen";
+import type { BonusItem, FoodItem, SnakeItem } from "$models/play-screen";
 import { writable } from "svelte/store";
 import { getId } from "../helpers/common";
 export interface PlayStatus {
   bonus: BonusItem[];
   foods: FoodItem[];
+  snake: SnakeItem[];
 }
+const getDefaultSnake = () => {
+  const defaultSnake: SnakeItem[] = [
+    {
+      id: getId(),
+      left: 2,
+      top: 0,
+    },
+    {
+      id: getId(),
+      left: 1,
+      top: 0,
+    },
+    {
+      id: getId(),
+      left: 0,
+      top: 0,
+    },
+  ];
+  return defaultSnake;
+};
 const getPlayStatusStore = () => {
-  let playStatus: PlayStatus = { bonus: [], foods: [] };
+  let playStatus: PlayStatus = { bonus: [], foods: [], snake: getDefaultSnake() };
   let { update, subscribe } = writable<PlayStatus>(playStatus);
 
   const addBonus = (item: BonusItem) => {
@@ -59,12 +80,29 @@ const getPlayStatusStore = () => {
     });
   };
 
-  const reset = () => {
+  const moveSnake = (head: SnakeItem) => {
     update((val: PlayStatus) => {
-      val = { bonus: [], foods: [] };
+      let arr = val.snake;
+      arr.pop();
+      arr = [head, ...arr];
+      val.snake = arr;
       return val;
     });
   };
-  return { subscribe, addBonus, removeBonus, addFood, removeFood, reset };
+  const growSnake = () => {
+    update((val: PlayStatus) => {
+      let arr = val.snake;
+      arr = [...arr, arr[arr.length - 1]];
+      val.snake = arr;
+      return val;
+    });
+  };
+  const reset = () => {
+    update((val: PlayStatus) => {
+      val = { bonus: [], foods: [], snake: getDefaultSnake() };
+      return val;
+    });
+  };
+  return { subscribe, addBonus, removeBonus, addFood, removeFood, moveSnake, growSnake, reset };
 };
 export const PlayStatusStore = getPlayStatusStore();

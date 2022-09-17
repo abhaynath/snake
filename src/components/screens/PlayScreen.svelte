@@ -14,7 +14,7 @@
   import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "$models/play-screen";
   import { onMount } from "svelte";
 
-  import { PlayStatusStore, type PlayStatus } from "../../../src/stores/playStatusStore";
+  import { PlayStatusStore, type PlayStatus } from "$stores/playStatusStore";
   let swipeDirection;
   let target;
   let isGamePaused = false;
@@ -63,7 +63,6 @@
   };
 
   let direction = Directions.RIGHT;
-  let snakeBodies: SnakeItem[] = [];
 
   let intervalId: string | number | NodeJS.Timeout;
 
@@ -91,14 +90,7 @@
       resetGame();
     }, Config.MESSAGE_TIME);
   };
-  const checkWallCollision = (head: SnakeItem) => {
-    bricks.forEach((brick) => {
-      if (isCollide(brick, head)) {
-        isProcessing = false;
-        gameOver();
-      }
-    });
-  };
+
   const checkBonusCollision = (head: SnakeItem) => {
     playStatus.bonus.forEach((d: BonusItem) => {
       if (isCollide(head, d)) {
@@ -108,7 +100,7 @@
     });
   };
   const checkNextLevel = () => {
-    if (snakeBodies.length / Config.MAX_POINTS > 1 && snakeBodies.length % Config.MAX_POINTS == 0) {
+    if (playStatus.snake.length / Config.MAX_POINTS > 1 && playStatus.snake.length % Config.MAX_POINTS == 0) {
       if (currentScoreInfo.level < Levels.length - 1) {
         nextLevel();
       } else {
@@ -118,7 +110,7 @@
     }
   };
   const getNextHead = () => {
-    let { left, top } = snakeBodies[0];
+    let { left, top } = playStatus.snake[0];
 
     if (direction === Directions.UP) {
       top -= 1;
@@ -130,14 +122,14 @@
       left += 1;
     }
 
-    const newHead: SnakeItem = { left, top };
+    const newHead: SnakeItem = { id: getId(), left, top };
     return newHead;
   };
 
   const checkFoodEaten = (head: SnakeItem) => {
     if (playStatus.foods.length > 0) {
       if (isCollide(head, playStatus.foods[0])) {
-        snakeBodies = [...snakeBodies, snakeBodies[snakeBodies.length - 1]];
+        PlayStatusStore.growSnake();
         scoreStore.eatFood();
         PlayStatusStore.removeFood(playStatus.foods[0].id);
         addFood();
@@ -166,8 +158,7 @@
 
       // checkWallCollision(newHead);
       checkBonusCollision(newHead);
-      snakeBodies.pop();
-      snakeBodies = [newHead, ...snakeBodies];
+      PlayStatusStore.moveSnake(newHead);
 
       checkFoodEaten(newHead);
       checkNextLevel();
@@ -179,79 +170,31 @@
     return !(a.top < b.top || a.top > b.top || a.left < b.left || a.left > b.left);
   };
 
-  const getNewFoodLocation = (): SnakeItem => {
-    let top = 0,
-      left = 0;
-    let foodLoc = { top, left };
-
-    let isFound = true;
-
-    top = Math.floor(Math.random() * Config.MAX_BLOCKS);
-    left = Math.floor(Math.random() * Config.MAX_BLOCKS);
-    foodLoc = { top, left };
-
-    const arr3 = [];
-    snakeBodies.forEach((d) => {
-      arr3.push(d);
-    });
-
-    /*  while (isFound) {
-      top = Math.floor(Math.random() * MAX_COLUMN) * BLOCK_SIZE;
-      left = Math.floor(Math.random() * MAX_ROW) * BLOCK_SIZE;
-      console.log(top, left);
-
-      foodLoc = { top, left };
-     
-      const joinedArr = [...snakeBodies,...bricks];
-
-      for (let i = 0; i < joinedArr.length; i++) {
-        if (!isCollide(joinedArr[i], foodLoc)) {
-          isFound = true;
-          break;
-        }
-      }
-    } */
-    return foodLoc;
-  };
-
   const resetGame = () => {
     direction = Directions.RIGHT;
-    snakeBodies = [
-      {
-        left: 2,
-        top: 0,
-      },
-      {
-        left: 1,
-        top: 0,
-      },
-      {
-        left: 0,
-        top: 0,
-      },
-    ];
   };
 
   const checkBoundaries = () => {
-    const { top, left } = snakeBodies[0];
+    const { top, left } = playStatus.snake[0];
+    const head = playStatus.snake[0];
     const right = left + 1;
     const bottom = top + 1;
     if (left >= Config.MAX_BLOCKS && direction == Directions.RIGHT) {
-      snakeBodies[0].left = -2;
+      head.left = -2;
     }
     if (left < 0 && direction == Directions.LEFT) {
-      snakeBodies[0].left = Config.MAX_BLOCKS + 1;
+      head.left = Config.MAX_BLOCKS + 1;
     }
     if (top < 0 && direction == Directions.UP) {
-      snakeBodies[0].top = Config.MAX_BLOCKS + 1;
+      head.top = Config.MAX_BLOCKS + 1;
     }
     if (top >= Config.MAX_BLOCKS && direction == Directions.DOWN) {
-      snakeBodies[0].top = -2;
+      head.top = -2;
     }
   };
   const isGameOver = () => {
-    const snakeBodiesNoHead = snakeBodies.slice(1);
-    const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, snakeBodies[0]));
+    const snakeBodiesNoHead = playStatus.snake.slice(1);
+    const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, playStatus.snake[0]));
     if (snakeCollisions.length > 0) {
       return true;
     }
@@ -341,7 +284,7 @@
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
-    <Snake {direction} {snakeBodies} size={BLOCK_SIZE} />
+    <Snake {direction} data={playStatus.snake} size={BLOCK_SIZE} />
     {#each playStatus.foods as food (food.id)}
       <Food data={food} size={BLOCK_SIZE} />
     {/each}

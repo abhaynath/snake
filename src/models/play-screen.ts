@@ -1,4 +1,5 @@
 export interface SnakeItem {
+  id:string;
   left: number;
   top: number;
 }
