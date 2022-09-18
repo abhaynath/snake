@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { BrickTypes, type BrickData } from "$models/level";
-  
+  import { BrickTypes, type BrickData } from "$models/play-screen";
+
   export let size: number = 0;
   export let data: BrickData;
 </script>
 
 <div class="brick" style="top:{data.top * size}px;left:{data.left * size}px;width:{size}px;height:{size}px;">
   {#if data.type == BrickTypes.DEFAULT}
-     <svg viewBox="0 0 54 58">
-    <symbol id="brick1" viewBox="-27 -29 54 58">
+    <svg viewBox="0 0 54 58">
+      <symbol id="brick1" viewBox="-27 -29 54 58">
         <polygon points="27,-29 -27,-29 -27,29 27,29 	" />
         <polygon fill="#BF6411" points="-15,29 -27,29 -27,16 -15,16 -2,16 -2,29 	" />
         <polygon fill="#BF6411" points="12,29 0,29 0,16 12,16 25,16 25,29 	" />
@@ -21,10 +21,9 @@
         <polygon fill="#BF6411" points="0,-15 -13,-15 -13,-27 0,-27 12,-27 12,-15 	" />
         <polygon fill="#BF6411" points="14,-15 27,-15 27,-27 14,-27 	" />
         <polygon display="none" fill="none" points="-27,29 27,29 27,-29 -27,-29 	" />
-    </symbol>
-    <use xlink:href="#brick1" width="54" height="58" x="-27" y="-29" transform="matrix(1 0 0 -1 27 29)"
-        overflow="visible" />
-</svg>
+      </symbol>
+      <use xlink:href="#brick1" width="54" height="58" x="-27" y="-29" transform="matrix(1 0 0 -1 27 29)" overflow="visible" />
+    </svg>
   {:else if data.type == BrickTypes.CONCRETE}
     <svg viewBox="0 0 563 563">
       <g>

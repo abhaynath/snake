@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { BonusTypes, type BlockItem } from "$models/play-screen";
   import { swipe } from "svelte-gestures";
   import { scoreStore } from "$stores/scoreStore";
   import { screenStore } from "$stores/screenStore";
@@ -8,7 +9,7 @@
   import Snake from "$gameItems/Snake.svelte";
   import { Levels } from "$models/level";
   import Bonus from "$gameItems/Bonus.svelte";
-  import { getId } from "$helpers/common";
+  import { getId, getNewElementNotPresentInArray } from "$helpers/common";
   import MessageBox from "$gameItems/MessageBox.svelte";
   import Wall from "$gameItems/Wall.svelte";
   import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "$models/play-screen";
@@ -257,18 +258,24 @@
   const onBonusFinished = (e: any) => {
     PlayStatusStore.removeBonus(e.detail);
   };
+
+  const getNextEmptyLocation = (): BlockItem => {
+    const sn = playStatus.snake.slice(0);
+    const bri = Levels[currentScoreInfo.level - 1].wall;
+    const wallAndSnake: BlockItem[] = [...bri, ...sn];
+    const element = getNewElementNotPresentInArray(wallAndSnake);
+    return element;
+  };
   const addFood = () => {
-    const id = getId();
-    let obj: FoodItem = { top: 0, left: 0, id: id, type: FoodTypes.DEFAULT };
-    obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
-    obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    if (playStatus.foods.length > 0) return;
+
+    const element = getNextEmptyLocation();
+    let obj: FoodItem = { top: element.top, left: element.left, id: element.id, type: FoodTypes.DEFAULT };
     PlayStatusStore.addFood(obj);
   };
   const addBonus = () => {
-    const id = getId();
-    let obj: BonusItem = { top: 0, left: 0, id: id };
-    obj.top = Math.floor(Math.random() * Config.MAX_BLOCKS);
-    obj.left = Math.floor(Math.random() * Config.MAX_BLOCKS);
+    const element = getNextEmptyLocation();
+    let obj: BonusItem = { top: element.top, left: element.left, id: element.id, type: BonusTypes.STAR };
     PlayStatusStore.addBonus(obj);
   };
 
