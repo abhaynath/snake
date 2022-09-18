@@ -8,7 +8,7 @@
   export let data: FoodItem;
 </script>
 
-<div class="food bounce-top" style="left: {data.left * size}px; top: {data.top * size}px;width:{size - 2}px;height:{size - 2}px;">
+<div class="food jello-vertical" style="left: {data.left * size}px; top: {data.top * size}px;width:{size - 2}px;height:{size - 2}px;">
   <svg viewBox="0 0 855.6 798.6">
     <g id="Layer_1" />
     <g id="Layer_2">

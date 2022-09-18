@@ -19,7 +19,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #3f3f3f;
+    /* background-color: #3f3f3f; */
     flex-grow: 1;
    /*  background: url("../../assets/welcome.jpg");
     background-repeat: no-repeat;

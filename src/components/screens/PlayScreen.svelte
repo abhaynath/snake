@@ -36,7 +36,7 @@
     }
   }
   onMount(() => {
-    console.log(`--onMount = ${BLOCK_SIZE} ${CANVAS_SIZE}`);
+    console.log(`--onMount = ${BLOCK_SIZE} ${CANVAS_SIZE} ${Levels[currentScoreInfo.level].bg}`);
   });
 
   let currentScreen: ScreenStatus;
@@ -286,7 +286,7 @@
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
   <div>Score</div>
   <main
-    style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level].bg}"
+    style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level - 1].bg}"
     use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
     on:swipe={handler}
   >
@@ -320,7 +320,7 @@
   .wrap {
     width: 100%;
     height: 100%;
-    background-color: rgb(158, 158, 158);
+    /* background-color: rgb(158, 158, 158); */
     color: white;
     user-select: none;
     overscroll-behavior: none;

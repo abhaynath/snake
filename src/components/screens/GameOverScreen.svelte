@@ -2,7 +2,13 @@
   import { screenStore } from "$stores/screenStore";
   import { scoreStore } from "$stores/scoreStore";
   import type { ScoreInfo } from "$models/gameState";
+  import { onMount } from "svelte";
 
+  let btnReplay:HTMLButtonElement;
+
+  onMount(()=>{
+    btnReplay.focus();
+  });
   const restartGame = () => {
     console.log("restart game");
     screenStore.welcomeScreen();
@@ -28,7 +34,7 @@
     <tr><td class="c1">Level-Stage</td><td class="c2">{scoreInfo.level}<span>-</span>{scoreInfo.stage}</td></tr>
   </table>
   <div class="flex">
-    <button on:click={replayGame}>Replay</button>
+    <button bind:this={btnReplay} on:click={replayGame}>Replay</button>
     <button on:click={restartGame}>Menu</button>
   </div>
 </div>
@@ -36,6 +42,7 @@
 <style>
   .game-over-screen {
     padding: 10px;
+    background-color: #000;
     /* background-color: rgb(71, 0, 0); */
     display: flex;
     flex-direction: column;
@@ -58,6 +65,7 @@
   }
   table .c2 {
     text-align: right;
+    color: #b46cf8;
   }
   .flex {
     display: flex;
