@@ -305,7 +305,7 @@
 
   <main
     style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level - 1].bg}"
-    use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
+    use:swipe={{ timeframe: 150, minSwipeDistance: 30, touchAction: "none" }}
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
