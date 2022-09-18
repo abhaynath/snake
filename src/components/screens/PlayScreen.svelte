@@ -70,6 +70,7 @@
   function handler(event: CustomEvent) {
     swipeDirection = event.detail.direction;
     target = event.detail.target;
+    direction = getDirectionFromSwipe();
   }
   const showMessage = (msg: EnumMessages) => {
     message = msg;
@@ -218,7 +219,20 @@
     }
     return Directions.UNKNOWN;
   };
-
+  const getDirectionFromSwipe = (): Directions => {
+    switch (swipeDirection) {
+      case "bottom":
+        return Directions.DOWN;
+      case "top":
+        return Directions.UP;
+      case "right":
+        return Directions.RIGHT;
+      case "left":
+        return Directions.LEFT;
+      default:
+        return Directions.UNKNOWN;
+    }
+  };
   const getOppositeDirection = (dir: Directions) => {
     switch (dir) {
       case Directions.DOWN:
@@ -284,7 +298,11 @@
 </script>
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
-  <div>Score</div>
+  <div class="scorecard" style="width:{CANVAS_SIZE}px;">
+    <div>Score : {currentScoreInfo.score}</div>
+    <div>Bonus : {currentScoreInfo.bonus}</div>
+  </div>
+
   <main
     style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level - 1].bg}"
     use:swipe={{ timeframe: 300, minSwipeDistance: 60, touchAction: "none" }}
@@ -334,5 +352,10 @@
     height: 100%;
     position: relative;
     overscroll-behavior: none;
+  }
+  .scorecard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 </style>
