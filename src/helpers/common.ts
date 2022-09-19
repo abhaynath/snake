@@ -18,6 +18,8 @@ export const getNewElementNotPresentInArray = (arr: BlockItem[]): BlockItem => {
   return obj;
 };
 export const checkItemExistsInArray = (item: BlockItem, arr: BlockItem[]) => {
+  if (item == null) return false;
+  if (arr == null) return false;
   for (let count = 0; count < arr.length; count++) {
     if (arr[count].top == item.top && arr[count].left == item.left) return true;
   }

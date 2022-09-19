@@ -5,6 +5,7 @@ export interface PlayStatus {
   bonus: BonusItem[];
   foods: FoodItem[];
   snake: SnakeItem[];
+  lastFoodLocation: FoodItem;
 }
 const getDefaultSnake = () => {
   const defaultSnake: SnakeItem[] = [
@@ -27,7 +28,7 @@ const getDefaultSnake = () => {
   return defaultSnake;
 };
 const getPlayStatusStore = () => {
-  let playStatus: PlayStatus = { bonus: [], foods: [], snake: getDefaultSnake() };
+  let playStatus: PlayStatus = { bonus: [], foods: [], snake: getDefaultSnake(), lastFoodLocation: null };
   let { update, subscribe } = writable<PlayStatus>(playStatus);
 
   const addBonus = (item: BonusItem) => {
@@ -72,6 +73,7 @@ const getPlayStatusStore = () => {
       let d = val.foods.slice(0);
       let index = d.findIndex((p: FoodItem) => p.id == id);
       if (index != -1) {
+        val.lastFoodLocation = d[index];
         d.splice(index, 1);
         val.foods = d;
         val = val;
@@ -99,7 +101,7 @@ const getPlayStatusStore = () => {
   };
   const reset = () => {
     update((val: PlayStatus) => {
-      val = { bonus: [], foods: [], snake: getDefaultSnake() };
+      val = { bonus: [], foods: [], snake: getDefaultSnake(),lastFoodLocation: null };
       return val;
     });
   };

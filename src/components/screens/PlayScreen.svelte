@@ -28,11 +28,14 @@
   let isGamePaused = false;
   let isMessageVisible = false;
   let message = EnumMessages.NEXT_LEVEL;
-  let isProcessing = false;
+
   let w: number;
   let h: number;
   let CANVAS_SIZE = 0;
   let BLOCK_SIZE = 0;
+  let direction = Directions.RIGHT;
+
+  let intervalId: string | number | NodeJS.Timeout;
 
   $: {
     CANVAS_SIZE = Math.min(w, h);
@@ -59,7 +62,7 @@
   PlayStatusStore.subscribe((val: PlayStatus) => {
     playStatus = val;
   });
-  $: bricks = Levels[currentScoreInfo.level - 1].wall;
+  // $: bricks = Levels[currentScoreInfo.level - 1].wall;
   const gameOver = () => {
     showMessage(EnumMessages.GAME_OVER);
     clearInterval(intervalId);
@@ -69,10 +72,6 @@
       screenStore.gameOver();
     }, Config.MESSAGE_TIME);
   };
-
-  let direction = Directions.RIGHT;
-
-  let intervalId: string | number | NodeJS.Timeout;
 
   function handler(event: CustomEvent) {
     swipeDirection = event.detail.direction;
@@ -109,7 +108,7 @@
     });
   };
   const checkNextLevel = () => {
-    if (playStatus.snake.length / Config.MAX_POINTS > 1 && playStatus.snake.length % Config.MAX_POINTS == 0) {
+    if (playStatus.snake.length / Config.MAXIMUM_POINT_COUNT > 1 && playStatus.snake.length % Config.MAXIMUM_POINT_COUNT == 0) {
       if (currentScoreInfo.level < Levels.length - 1) {
         nextLevel();
       } else {
@@ -131,16 +130,16 @@
       left += 1;
     }
 
-    const newHead: SnakeItem = { id: getId(), left, top };
+    const newHead: BlockItem = { id: getId(), left, top };
     return newHead;
   };
 
   const checkFoodEaten = (head: SnakeItem) => {
     if (playStatus.foods.length > 0) {
       if (isCollide(head, playStatus.foods[0])) {
+        PlayStatusStore.removeFood(playStatus.foods[0].id);
         PlayStatusStore.growSnake();
         scoreStore.eatFood();
-        PlayStatusStore.removeFood(playStatus.foods[0].id);
         addFood();
         //moveFood();
         if (currentScoreInfo.food % 5 == 0) {
@@ -151,28 +150,26 @@
   };
   const startGame = () => {
     let delay = Levels.length - currentScoreInfo.level;
-    delay = delay * Config.DELAY;
+    delay = delay * Config.SNAKE_SPEED;
     PlayStatusStore.reset();
     addFood();
 
     intervalId = setInterval(() => {
-      isProcessing = true;
       if (isGameOver()) {
-        isProcessing = false;
         gameOver();
+        return;
       }
       checkBoundaries();
 
       const newHead = getNextHead();
 
-      // checkWallCollision(newHead);
       checkBonusCollision(newHead);
+
       PlayStatusStore.moveSnake(newHead);
 
       checkFoodEaten(newHead);
       checkNextLevel();
-      isProcessing = false;
-    }, Config.DELAY);
+    }, Config.SNAKE_SPEED);
   };
 
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
@@ -186,27 +183,27 @@
   const checkBoundaries = () => {
     const { top, left } = playStatus.snake[0];
     const head = playStatus.snake[0];
-    const right = left + 1;
-    const bottom = top + 1;
+    // const head = getNextHead();
+
     if (left >= Config.GRID_COUNT && direction == Directions.RIGHT) {
-      head.left = -2;
+      head.left = -1;
     }
     if (left < 0 && direction == Directions.LEFT) {
-      head.left = Config.GRID_COUNT + 1;
+      head.left = Config.GRID_COUNT;
     }
     if (top < 0 && direction == Directions.UP) {
-      head.top = Config.GRID_COUNT + 1;
+      head.top = Config.GRID_COUNT;
     }
     if (top >= Config.GRID_COUNT && direction == Directions.DOWN) {
-      head.top = -2;
+      head.top = -1;
     }
   };
   const isGameOver = () => {
-    const snakeBodiesNoHead: BlockItem[] = playStatus.snake.slice(1);
+    const snakeBodiesNoHead: BlockItem[] = playStatus.snake.slice(0);
     const tBricks: BlockItem[] = Levels[currentScoreInfo.level - 1].wall;
-    const head: BlockItem = playStatus.snake[0];
     const filledBlocks = [...snakeBodiesNoHead, ...tBricks];
-    return checkItemExistsInArray(head, filledBlocks);
+    const newHead = getNextHead();
+    return checkItemExistsInArray(newHead, filledBlocks);
   };
 
   const pauseGame = () => {
@@ -214,9 +211,6 @@
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (isProcessing) {
-      return;
-    }
     const keyCode = e.code;
     if (keyCode === KeyMap.SPACEBAR) {
       isGamePaused = !isGamePaused;
@@ -266,18 +260,13 @@
 </script>
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
-  <div class="scorecard" style="width:{CANVAS_SIZE}px;">
-    <div>Score : {currentScoreInfo.score}</div>
-    <div>Bonus : {currentScoreInfo.bonus}</div>
-  </div>
-
   <main
     style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level - 1].bg}"
     use:swipe={{ timeframe: 150, minSwipeDistance: 30, touchAction: "none" }}
     on:swipe={handler}
   >
     <Wall size={BLOCK_SIZE} />
-    <Snake {direction} data={playStatus.snake} size={BLOCK_SIZE} />
+    <Snake {direction} size={BLOCK_SIZE} />
     {#each playStatus.foods as food (food.id)}
       <Food data={food} size={BLOCK_SIZE} />
     {/each}
@@ -291,7 +280,10 @@
       <MessageBox {message} />
     {/if}
   </main>
-  <div><span>Pause</span></div>
+  <div class="scorecard" style="width:{CANVAS_SIZE}px;">
+    <div>Score : {currentScoreInfo.score}</div>
+    <div>Bonus : {currentScoreInfo.bonus}</div>
+  </div>
 </div>
 
 <!-- <div class="score">
