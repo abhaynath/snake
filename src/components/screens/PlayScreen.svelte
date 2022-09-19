@@ -9,7 +9,14 @@
   import Snake from "$gameItems/Snake.svelte";
   import { Levels } from "$models/level";
   import Bonus from "$gameItems/Bonus.svelte";
-  import { getId, getNewElementNotPresentInArray } from "$helpers/common";
+  import {
+    checkItemExistsInArray,
+    getDirectionFromKeyCode,
+    getDirectionFromSwipe,
+    getId,
+    getNewElementNotPresentInArray,
+    getOppositeDirection,
+  } from "$helpers/common";
   import MessageBox from "$gameItems/MessageBox.svelte";
   import Wall from "$gameItems/Wall.svelte";
   import { FoodTypes, type BonusItem, type FoodItem, type SnakeItem } from "$models/play-screen";
@@ -29,10 +36,10 @@
 
   $: {
     CANVAS_SIZE = Math.min(w, h);
-    CANVAS_SIZE = CANVAS_SIZE - 50;
-    CANVAS_SIZE = Math.min(CANVAS_SIZE, 500);
+    CANVAS_SIZE = CANVAS_SIZE - Config.GRID_PADDING;
+    CANVAS_SIZE = Math.min(CANVAS_SIZE, Config.GRID_MAX_SIZE);
     if (!isNaN(CANVAS_SIZE)) {
-      BLOCK_SIZE = Math.floor(CANVAS_SIZE / Config.MAX_BLOCKS);
+      BLOCK_SIZE = Math.floor(CANVAS_SIZE / Config.GRID_COUNT);
     }
   }
   onMount(() => {
@@ -70,7 +77,7 @@
   function handler(event: CustomEvent) {
     swipeDirection = event.detail.direction;
     target = event.detail.target;
-    direction = getDirectionFromSwipe();
+    direction = getDirectionFromSwipe(swipeDirection);
   }
   const showMessage = (msg: EnumMessages) => {
     message = msg;
@@ -181,72 +188,31 @@
     const head = playStatus.snake[0];
     const right = left + 1;
     const bottom = top + 1;
-    if (left >= Config.MAX_BLOCKS && direction == Directions.RIGHT) {
+    if (left >= Config.GRID_COUNT && direction == Directions.RIGHT) {
       head.left = -2;
     }
     if (left < 0 && direction == Directions.LEFT) {
-      head.left = Config.MAX_BLOCKS + 1;
+      head.left = Config.GRID_COUNT + 1;
     }
     if (top < 0 && direction == Directions.UP) {
-      head.top = Config.MAX_BLOCKS + 1;
+      head.top = Config.GRID_COUNT + 1;
     }
-    if (top >= Config.MAX_BLOCKS && direction == Directions.DOWN) {
+    if (top >= Config.GRID_COUNT && direction == Directions.DOWN) {
       head.top = -2;
     }
   };
   const isGameOver = () => {
-    const snakeBodiesNoHead = playStatus.snake.slice(1);
-    const snakeCollisions = snakeBodiesNoHead.filter((sb) => isCollide(sb, playStatus.snake[0]));
-    if (snakeCollisions.length > 0) {
-      return true;
-    }
-
-    return false;
+    const snakeBodiesNoHead: BlockItem[] = playStatus.snake.slice(1);
+    const tBricks: BlockItem[] = Levels[currentScoreInfo.level - 1].wall;
+    const head: BlockItem = playStatus.snake[0];
+    const filledBlocks = [...snakeBodiesNoHead, ...tBricks];
+    return checkItemExistsInArray(head, filledBlocks);
   };
 
   const pauseGame = () => {
     clearInterval(intervalId);
   };
-  const getDirectionFromKeyCode = (keyCode: string) => {
-    if (keyCode === KeyMap.UP && direction != Directions.DOWN) {
-      return Directions.UP;
-    } else if (keyCode === KeyMap.RIGHT && direction != Directions.LEFT) {
-      return Directions.RIGHT;
-    } else if (keyCode === KeyMap.LEFT && direction != Directions.RIGHT) {
-      return Directions.LEFT;
-    } else if (keyCode === KeyMap.DOWN && direction != Directions.UP) {
-      return Directions.DOWN;
-    }
-    return Directions.UNKNOWN;
-  };
-  const getDirectionFromSwipe = (): Directions => {
-    switch (swipeDirection) {
-      case "bottom":
-        return Directions.DOWN;
-      case "top":
-        return Directions.UP;
-      case "right":
-        return Directions.RIGHT;
-      case "left":
-        return Directions.LEFT;
-      default:
-        return Directions.UNKNOWN;
-    }
-  };
-  const getOppositeDirection = (dir: Directions) => {
-    switch (dir) {
-      case Directions.DOWN:
-        return Directions.UP;
-      case Directions.UP:
-        return Directions.DOWN;
-      case Directions.LEFT:
-        return Directions.RIGHT;
-      case Directions.RIGHT:
-        return Directions.LEFT;
-      case Directions.UNKNOWN:
-        return Directions.UNKNOWN;
-    }
-  };
+
   const onKeyDown = (e: KeyboardEvent) => {
     if (isProcessing) {
       return;
@@ -263,7 +229,7 @@
     if (isGamePaused) {
       return;
     }
-    const newDirection = getDirectionFromKeyCode(keyCode);
+    const newDirection = getDirectionFromKeyCode(keyCode, direction);
     if (newDirection != Directions.UNKNOWN && newDirection != getOppositeDirection(newDirection)) {
       direction = newDirection;
     }
@@ -274,10 +240,12 @@
   };
 
   const getNextEmptyLocation = (): BlockItem => {
-    const sn = playStatus.snake.slice(0);
-    const bri = Levels[currentScoreInfo.level - 1].wall;
-    const wallAndSnake: BlockItem[] = [...bri, ...sn];
-    const element = getNewElementNotPresentInArray(wallAndSnake);
+    const tSnake = playStatus.snake.slice(0);
+    const tBricks = Levels[currentScoreInfo.level - 1].wall;
+    const tFoods = playStatus.foods.slice(0);
+    const tBonus = playStatus.bonus.slice(0);
+    const filledBlocks: BlockItem[] = [...tBricks, ...tSnake, ...tFoods, ...tBonus];
+    const element = getNewElementNotPresentInArray(filledBlocks);
     return element;
   };
   const addFood = () => {
