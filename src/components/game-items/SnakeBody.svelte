@@ -4,9 +4,9 @@
 
   export let size = 0;
   export let current: SnakeItem = null;
-  export let prev: SnakeItem = null;
+  export let index = 0;
 
-  export let isHead = false;
+  export let isHead = index == 0;
   export let isTail = false;
   export let isFoodLocation = false;
   export let direction = "right";
@@ -33,7 +33,7 @@
         </g>
       </svg>
     {:else if isTail}
-      <svg viewBox="0 0 50 50"  class={direction + " " + getClass()}>
+      <svg viewBox="0 0 50 50" class={direction + " " + getClass()}>
         <rect y="0" width="50" height="50" />
       </svg>
     {:else}
@@ -65,8 +65,8 @@
     transform: rotate(90deg);
     /* background-color: green; */
   }
-  .normal_block{
-    fill:red;
+  .normal_block {
+    fill: red;
   }
   .food {
     fill: orange;

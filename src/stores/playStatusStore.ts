@@ -5,7 +5,7 @@ export interface PlayStatus {
   bonus: BonusItem[];
   foods: FoodItem[];
   snake: SnakeItem[];
-  lastFoodLocation: FoodItem;
+  lastFoodLocation: number;
 }
 const getDefaultSnake = () => {
   const defaultSnake: SnakeItem[] = [
@@ -28,7 +28,7 @@ const getDefaultSnake = () => {
   return defaultSnake;
 };
 const getPlayStatusStore = () => {
-  let playStatus: PlayStatus = { bonus: [], foods: [], snake: getDefaultSnake(), lastFoodLocation: null };
+  let playStatus: PlayStatus = { bonus: [], foods: [], snake: getDefaultSnake(), lastFoodLocation: -1 };
   let { update, subscribe } = writable<PlayStatus>(playStatus);
 
   const addBonus = (item: BonusItem) => {
@@ -73,7 +73,7 @@ const getPlayStatusStore = () => {
       let d = val.foods.slice(0);
       let index = d.findIndex((p: FoodItem) => p.id == id);
       if (index != -1) {
-        val.lastFoodLocation = d[index];
+        val.lastFoodLocation = 0;
         d.splice(index, 1);
         val.foods = d;
         val = val;
@@ -88,6 +88,8 @@ const getPlayStatusStore = () => {
       arr.pop();
       arr = [head, ...arr];
       val.snake = arr;
+      val.lastFoodLocation = val.lastFoodLocation + 1;
+      // console.log(val.lastFoodLocation);
       return val;
     });
   };
@@ -101,7 +103,7 @@ const getPlayStatusStore = () => {
   };
   const reset = () => {
     update((val: PlayStatus) => {
-      val = { bonus: [], foods: [], snake: getDefaultSnake(),lastFoodLocation: null };
+      val = { bonus: [], foods: [], snake: getDefaultSnake(), lastFoodLocation: null };
       return val;
     });
   };
