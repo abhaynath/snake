@@ -11,5 +11,5 @@
 </script>
 
 {#each playStatus.snake as item, i}
-  <SnakeBody index={i} isTail={i == playStatus.snake.length - 1} current={item} {direction} {size} isFoodLocation={playStatus.lastFoodLocation == i} />
+  <SnakeBody index={i} isTail={i == playStatus.snake.length - 1} current={item} {direction} {size} />
 {/each}

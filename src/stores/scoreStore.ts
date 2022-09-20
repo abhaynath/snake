@@ -6,7 +6,7 @@ export enum ScoreValues {
   BONUS = 20,
 }
 const createScoreStore = () => {
-  let init: ScoreInfo = { playerName: "Abhay", level: 1, stage: 1, score: 0, highScore: 0, bonus: 0, food: 0 };
+  let init: ScoreInfo = { playerName: "Abhay", level: 0, stage: 0, score: 0, highScore: 0, bonus: 0, food: 0 };
   let { update, subscribe } = writable<ScoreInfo>(init);
   const resetScore = () => {
     update((val: ScoreInfo) => {
@@ -40,6 +40,16 @@ const createScoreStore = () => {
     });
   };
 
-  return { subscribe, resetScore, eatFood, getBonus, nextLevel };
+  const resetGame = () => {
+    update((val: ScoreInfo) => {
+      val.food = 0;
+      val.bonus = 0;
+      val.score = 0;
+      val.level = 0;
+      val.stage = 0;
+      return val;
+    });
+  };
+  return { subscribe, resetScore, eatFood, getBonus, nextLevel, resetGame };
 };
 export let scoreStore = createScoreStore();

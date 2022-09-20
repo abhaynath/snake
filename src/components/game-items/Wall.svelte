@@ -9,7 +9,7 @@
   scoreStore.subscribe((val: ScoreInfo) => {
     currentScoreInfo = val;
   });
-  $: bricks = Levels[currentScoreInfo.level - 1].wall;
+  $: bricks = Levels[currentScoreInfo.level].wall;
 </script>
 
 {#each bricks as brick}

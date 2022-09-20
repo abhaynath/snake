@@ -114,6 +114,7 @@
       } else {
         clearInterval(intervalId);
         screenStore.allLevelsCleared();
+        scoreStore.resetGame();
       }
     }
   };
@@ -169,7 +170,7 @@
 
       checkFoodEaten(newHead);
       checkNextLevel();
-    }, Config.SNAKE_SPEED);
+    }, delay);
   };
 
   const isCollide = (a: SnakeItem, b: SnakeItem) => {
@@ -200,7 +201,7 @@
   };
   const isGameOver = () => {
     const snakeBodiesNoHead: BlockItem[] = playStatus.snake.slice(0);
-    const tBricks: BlockItem[] = Levels[currentScoreInfo.level - 1].wall;
+    const tBricks: BlockItem[] = Levels[currentScoreInfo.level].wall;
     const filledBlocks = [...snakeBodiesNoHead, ...tBricks];
     const newHead = getNextHead();
     return checkItemExistsInArray(newHead, filledBlocks);
@@ -235,7 +236,7 @@
 
   const getNextEmptyLocation = (): BlockItem => {
     const tSnake = playStatus.snake.slice(0);
-    const tBricks = Levels[currentScoreInfo.level - 1].wall;
+    const tBricks = Levels[currentScoreInfo.level].wall;
     const tFoods = playStatus.foods.slice(0);
     const tBonus = playStatus.bonus.slice(0);
     const filledBlocks: BlockItem[] = [...tBricks, ...tSnake, ...tFoods, ...tBonus];
@@ -261,7 +262,7 @@
 
 <div class="wrap" bind:clientWidth={w} bind:clientHeight={h}>
   <main
-    style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level - 1].bg}"
+    style="width:{CANVAS_SIZE}px;height:{CANVAS_SIZE}px;background:{Levels[currentScoreInfo.level].bg}"
     use:swipe={{ timeframe: 150, minSwipeDistance: 30, touchAction: "none" }}
     on:swipe={handler}
   >
@@ -282,6 +283,7 @@
   </main>
   <div class="scorecard" style="width:{CANVAS_SIZE}px;">
     <div>Score : {currentScoreInfo.score}</div>
+    <div class="arrow {direction}">→</div>
     <div>Bonus : {currentScoreInfo.bonus}</div>
   </div>
 </div>
@@ -317,5 +319,32 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding: 5px;
+  }
+  .right {
+    transform: rotate(0deg);
+  }
+  .left {
+    transform: rotate(180deg);
+  }
+  .up {
+    transform: rotate(270deg);
+    /* background-color: red; */
+  }
+  .down {
+    transform: rotate(90deg);
+    /* background-color: green; */
+  }
+  .arrow {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+
+    background-color: red;
+    border-radius: 50%;
   }
 </style>

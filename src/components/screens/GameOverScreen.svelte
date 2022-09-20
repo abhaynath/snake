@@ -31,7 +31,7 @@
     <tr><td class="c1">Food</td><td class="c2">{scoreInfo.food}</td></tr>
     <tr><td class="c1">Bonus</td><td class="c2">{scoreInfo.bonus}</td></tr>
     <tr><td class="c1">High Score</td><td class="c2">{scoreInfo.highScore}</td></tr>
-    <tr><td class="c1">Level-Stage</td><td class="c2">{scoreInfo.level}<span>-</span>{scoreInfo.stage}</td></tr>
+    <tr><td class="c1">Level</td><td class="c2">{scoreInfo.level}</td></tr>
   </table>
   <div class="flex">
     <button bind:this={btnReplay} on:click={replayGame}>Replay</button>

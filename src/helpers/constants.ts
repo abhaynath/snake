@@ -11,8 +11,8 @@ export const EnumDimensions = {
   BLOCK_SIZE: 50,
 };
 export enum Config {
-  SNAKE_SPEED = 200,
-  MAXIMUM_POINT_COUNT = 25,
+  SNAKE_SPEED = 100,
+  MAXIMUM_POINT_COUNT = 26,
   BONUS_TIME = 5000,
   MESSAGE_TIME = 3000,
   GRID_COUNT = 20,

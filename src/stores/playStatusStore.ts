@@ -73,7 +73,7 @@ const getPlayStatusStore = () => {
       let d = val.foods.slice(0);
       let index = d.findIndex((p: FoodItem) => p.id == id);
       if (index != -1) {
-        val.lastFoodLocation = 0;
+        // val.lastFoodLocation = 1;
         d.splice(index, 1);
         val.foods = d;
         val = val;
@@ -88,7 +88,7 @@ const getPlayStatusStore = () => {
       arr.pop();
       arr = [head, ...arr];
       val.snake = arr;
-      val.lastFoodLocation = val.lastFoodLocation + 1;
+      //  val.lastFoodLocation = val.lastFoodLocation + 1;
       // console.log(val.lastFoodLocation);
       return val;
     });
