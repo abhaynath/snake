@@ -66,8 +66,7 @@
     transform: rotate(90deg);
     /* background-color: green; */
   }
-  .normal_block {
-  }
+  
   .food {
     fill: orange;
     /* opacity: 0.1; */
